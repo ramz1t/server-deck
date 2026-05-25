@@ -6,7 +6,7 @@ status: in_progress
 last_updated: "2026-05-25T13:10:00Z"
 progress:
   total_phases: 6
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 5
   completed_plans: 6
   percent: 33

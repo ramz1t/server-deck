@@ -12,7 +12,7 @@
 ## Phases
 
 - [x] **Phase 1: Auth Foundation** — Users can securely log in, maintain sessions, and log out; all routes are protected
-- [ ] **Phase 2: Container Dashboard** — Users can see every Docker container and start, stop, or restart them
+- [x] **Phase 2: Container Dashboard** — Users can see every Docker container and start, stop, or restart them
 - [ ] **Phase 3: Real-Time Container Status** — Container list updates live without a page reload
 - [ ] **Phase 4: Log Streaming** — Users can watch live container logs stream in the browser
 - [ ] **Phase 5: SSH Terminal** — Users can open a full PTY-backed SSH terminal from a phone browser
@@ -56,8 +56,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-PLAN-docker-api.md — Docker SSH service, container list/action REST routes
-- [ ] 02-PLAN-container-ui.md — Container dashboard UI, TanStack Query, shadcn components
+- [x] 02-PLAN-docker-api.md — Docker SSH service, container list/action REST routes
+- [x] 02-PLAN-container-ui.md — Container dashboard UI, TanStack Query, shadcn components
 **UI hint**: yes
 
 ---
