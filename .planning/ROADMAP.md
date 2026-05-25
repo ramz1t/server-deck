@@ -71,7 +71,11 @@ Plans:
   1. Starting a container from the CLI (outside the app) causes its status badge to update in the browser within 2 seconds — no page refresh required
   2. Stopping a container from the CLI causes its badge to flip to stopped in the browser within 2 seconds
   3. One Docker events stream is open globally (verified: no per-client streams accumulating on new connections)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 03-PLAN-backend-ws.md — Install @fastify/websocket, DockerEventsManager service (SSH events stream + broadcast), WS route GET /api/containers/events, server.ts registration
+- [ ] 03-PLAN-frontend-ws.md — useContainerEvents hook (WS lifecycle, setQueryData, backoff reconnect), DashboardPage integration (dynamic refetchInterval, reconnecting indicator)
 
 ---
 
