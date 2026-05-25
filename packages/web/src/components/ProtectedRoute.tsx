@@ -8,11 +8,13 @@ type AuthState = 'loading' | 'authenticated' | 'unauthenticated'
 export function ProtectedRoute() {
   const [authState, setAuthState] = useState<AuthState>('loading')
   const [host, setHost] = useState('')
+  const [username, setUsername] = useState('')
 
   useEffect(() => {
     api.get('/auth/me')
       .then((response) => {
         setHost(response.data.host)
+        setUsername(response.data.username)
         setAuthState('authenticated')
       })
       .catch(() => {
@@ -32,7 +34,7 @@ export function ProtectedRoute() {
     return <Navigate to="/login" replace />
   }
 
-  return <Outlet context={{ host }} />
+  return <Outlet context={{ host, username }} />
 }
 
 export default ProtectedRoute
