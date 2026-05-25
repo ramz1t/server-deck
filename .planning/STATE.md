@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-05-25T09:28:47.150Z"
+status: planned
+last_updated: "2026-05-25T00:00:00.000Z"
 progress:
   total_phases: 6
   completed_phases: 0
-  total_plans: 0
+  total_plans: 3
   completed_plans: 0
   percent: 0
 ---
@@ -25,14 +25,14 @@ progress:
 | Field | Value |
 |-------|-------|
 | **Phase** | 1 — Auth Foundation |
-| **Plan** | TBD (not yet planned) |
-| **Status** | Not started |
+| **Plan** | Ready for execution (3 plans, 3 waves) |
+| **Status** | Planned — awaiting `/gsd-execute-phase 1` |
 | **Milestone** | v1 |
 
 **Progress:**
 
 ```
-[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0% — 0 of 6 phases complete
+[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0% — 0 of 6 phases complete (Phase 1 planned)
 ```
 
 ---
@@ -41,7 +41,7 @@ progress:
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | Auth Foundation | Not started |
+| 1 | Auth Foundation | **Planned** (3 plans ready) |
 | 2 | Container Dashboard | Not started |
 | 3 | Real-Time Container Status | Not started |
 | 4 | Log Streaming | Not started |
@@ -56,7 +56,7 @@ progress:
 |--------|-------|
 | Phases defined | 6 |
 | Requirements mapped | 27/27 |
-| Plans created | 0 |
+| Plans created | 3 |
 | Plans complete | 0 |
 | Phases complete | 0 |
 
@@ -103,8 +103,9 @@ progress:
 
 ## Todos
 
-- [ ] Plan Phase 1 (Auth Foundation)
-- [ ] Scaffold project (Fastify monorepo or separate `server/` + `client/` dirs)
+- [x] Plan Phase 1 (Auth Foundation) — 3 plans committed, plan-checker PASS
+- [ ] Execute Phase 1 (`/gsd-execute-phase 1`)
+- [ ] Scaffold project (Wave 1: pnpm monorepo + Fastify 5 + React/Vite/Tailwind v4/shadcn/ui)
 - [ ] Confirm SSH key path and permissions at startup
 
 ---
