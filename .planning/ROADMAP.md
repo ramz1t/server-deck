@@ -33,8 +33,12 @@
   3. User clicks "Log out" and is returned to the login page; a subsequent API call returns 401
   4. Submitting the wrong password 6+ times in rapid succession is rejected with 429 Too Many Requests
   5. Accessing `/api/*` or any WebSocket upgrade without a valid cookie returns 401 before any Docker code runs
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 3 plans
+
+Plans:
+- [ ] 01-PLAN-scaffold.md — Monorepo scaffold: pnpm workspaces, Fastify 5 skeleton, React/Vite/Tailwind v4/shadcn/ui
+- [ ] 01-PLAN-backend-auth.md — SSH auth service, session Map, JWT cookie endpoints, auth middleware
+- [ ] 01-PLAN-frontend-auth.md — Axios client, login page (UI-SPEC), ProtectedRoute, dashboard stub, Vite proxy
 
 ---
 
