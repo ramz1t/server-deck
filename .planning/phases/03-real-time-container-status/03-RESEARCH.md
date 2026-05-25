@@ -792,17 +792,16 @@ However, to support reconnect after the events SSH Client drops (and no new WS c
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **`verifyAuth` global hook + WS route interaction**
+1. **`verifyAuth` global hook + WS route interaction** — RESOLVED
    - What we know: `@fastify/websocket` README confirms preHandler runs before WS upgrade [VERIFIED]
    - What's unclear: Whether Fastify's global hook is applied to plugin-encapsulated routes from `containerEventsRoute` if registered in a different plugin scope
-   - Recommendation: Add `preHandler: [verifyAuth]` explicitly on the WS route as belt-and-suspenders (belt = global hook, suspenders = explicit per-route hook). This costs nothing and eliminates the ambiguity.
+   - RESOLVED: Per Fastify's encapsulation model, `fastify.addHook` called on the root instance propagates to all plugins registered via `fastify.register()` by default (non-encapsulated hooks). However, since this is security-adjacent and the cost is zero, the plan adds an explicit `preHandler: [verifyAuth]` to the WS route options as belt-and-suspenders. This eliminates the ambiguity entirely regardless of Fastify's hook propagation behaviour.
 
-2. **Event debouncing necessity**
+2. **Event debouncing necessity** — RESOLVED
    - What we know: `docker restart` generates 3 events; `docker stop` generates 2 events
-   - What's unclear: Whether rapid-fire events cause observable issues in practice for a single-user tool
-   - Recommendation: Implement 150 ms debounce from the start; it's 4 lines of code and prevents SSH contention.
+   - RESOLVED: Implement 150 ms debounce. For a personal single-user tool the observable impact is low, but the implementation is 4 lines and prevents 2–3 redundant SSH execs per `docker restart`. Included in the plan.
 
 ---
 

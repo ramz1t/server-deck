@@ -171,9 +171,10 @@ Output: A running Fastify server that maintains one persistent SSH `docker event
 
     Private method scheduleReconnect(): void
       - this.isRunning = false
+      - const fireAfter = this.retryDelay  // capture before doubling (first reconnect fires at 1s)
       - this.retryDelay = Math.min(this.retryDelay * 2, BACKOFF_MAX_MS)
       - if (this.reconnectTimer) clearTimeout(this.reconnectTimer)
-      - this.reconnectTimer = setTimeout(() => { this.startStream() }, this.retryDelay)
+      - this.reconnectTimer = setTimeout(() => { this.startStream() }, fireAfter)
 
     Private method handleLine(line: string): void
       - try { parse JSON line as DockerEvent } catch { return }  // skip malformed JSON
@@ -268,7 +269,12 @@ Output: A running Fastify server that maintains one persistent SSH `docker event
         )
       }
 
-    NOTE: No per-route preHandler needed — the global `fastify.addHook('preHandler', verifyAuth)` in server.ts fires before WS upgrade for all routes, per @fastify/websocket docs (verified in 03-RESEARCH.md §Pattern 1).
+    NOTE: Belt-and-suspenders auth — add explicit `preHandler: [verifyAuth]` in the WS route options
+    in addition to the global hook. The global `fastify.addHook('preHandler', verifyAuth)` fires for
+    all routes, but Fastify's encapsulation model for plugin-scoped routes could theoretically differ.
+    The per-route preHandler costs nothing and eliminates any ambiguity (per RESEARCH.md Open Question
+    1 resolution). Import `verifyAuth` from '../middleware/verify-auth.js' in container-events.ts and
+    pass `{ websocket: true, preHandler: [verifyAuth] }` as the route options object.
 
     STEP B — Modify packages/server/src/server.ts:
 
