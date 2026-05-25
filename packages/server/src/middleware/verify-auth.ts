@@ -7,7 +7,8 @@ export async function verifyAuth(
   request: FastifyRequest,
   reply: FastifyReply
 ): Promise<void> {
-  if (EXCLUDED_PATHS.includes(request.url)) {
+  // Strip query string before path comparison to avoid blocking login with ?next=... (CR-03)
+  if (EXCLUDED_PATHS.includes(request.url.split('?')[0])) {
     return
   }
 

@@ -28,23 +28,25 @@ export function LoginPage() {
     setIsLoading(true)
     setError(null)
 
-    // Persist convenience values — per D-09 (host/port) + agent discretion (username)
-    localStorage.setItem('sd_host', host)
-    localStorage.setItem('sd_port', port)
-    localStorage.setItem('sd_username', username)
-    // Password is NEVER stored
-
     try {
       await api.post('/auth/login', { host, port: Number(port), username, password })
+      // Only persist convenience values after successful login (IN-02: don't overwrite correct values on failure)
+      localStorage.setItem('sd_host', host)
+      localStorage.setItem('sd_port', port)
+      localStorage.setItem('sd_username', username)
       navigate('/')
     } catch (err: unknown) {
       const status = (err as { response?: { status?: number } }).response?.status
       if (status === 401) {
-        setError('Invalid credentials. Check your host, port, and try again.')
+        setError('Invalid credentials. Check your username and password.')
       } else if (status === 429) {
         setError('Too many attempts. Wait a minute and try again.')
-      } else {
+      } else if (status === 504) {
         setError('Connection timed out. Verify host and port are reachable.')
+      } else if (status === 502) {
+        setError('Host unreachable. Check the host address and port.')
+      } else {
+        setError('An unexpected error occurred. Please try again.')
       }
     } finally {
       setIsLoading(false)

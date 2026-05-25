@@ -33,9 +33,16 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     async (request: FastifyRequest<{ Body: LoginBody }>, reply: FastifyReply) => {
       const { host, port, username, password } = request.body
 
-      const valid = await validateSshCredentials(host, port, username, password)
-      if (!valid) {
+      const result = await validateSshCredentials(host, port, username, password)
+
+      if (result === 'auth_failed') {
         return reply.status(401).send({ error: 'Invalid credentials' })
+      }
+      if (result === 'timeout') {
+        return reply.status(504).send({ error: 'Connection timed out' })
+      }
+      if (result === 'unreachable') {
+        return reply.status(502).send({ error: 'Host unreachable' })
       }
 
       const sessionId = crypto.randomUUID()
@@ -43,9 +50,10 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
 
       const token = fastify.jwt.sign({ sessionId }, { expiresIn: '7d' })
 
+      const isSecure = process.env.NODE_ENV === 'production' || process.env.HTTPS === 'true'
       reply.setCookie('sd_token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: isSecure,
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60,
         path: '/',
@@ -59,13 +67,14 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     try {
       const token = (request.cookies as Record<string, string | undefined>)['sd_token']
       if (token) {
-        const decoded = fastify.jwt.decode<{ sessionId: string }>(token)
-        if (decoded?.sessionId) {
-          deleteSession(decoded.sessionId)
+        // Use jwt.verify (not jwt.decode) to prevent forged cookie session deletion (CR-02)
+        const payload = await fastify.jwt.verify<{ sessionId: string }>(token)
+        if (payload?.sessionId) {
+          deleteSession(payload.sessionId)
         }
       }
     } catch {
-      // ignore invalid tokens on logout
+      // Ignore invalid/expired tokens on logout — always clear the cookie
     }
 
     reply.clearCookie('sd_token', { path: '/' })
@@ -73,7 +82,8 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
   })
 
   fastify.get('/api/auth/me', async (request: FastifyRequest, reply: FastifyReply) => {
-    await request.jwtVerify()
+    // jwtVerify already called by verifyAuth preHandler; calling it again is harmless
+    // but redundant — relying on preHandler-populated request.user (IN-03 noted)
     const session = getSession(request.user.sessionId)
     if (!session) {
       return reply.status(401).send({ error: 'Session not found' })
