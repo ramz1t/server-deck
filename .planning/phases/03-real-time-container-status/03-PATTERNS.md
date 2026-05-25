@@ -232,7 +232,7 @@ const {
 ```
 > Replace with:
 ```typescript
-const wsConnected = useContainerEvents(queryClient)
+const { wsConnected, hasConnectedOnce } = useContainerEvents(queryClient)
 
 const {
   data: containers,
@@ -251,11 +251,11 @@ const {
 **"reconnecting" indicator placement** — insert into existing header JSX (lines 156–180):
 ```tsx
 {/* inside the header, after the ServerDeck brand span: */}
-{!wsConnected && (
+{!wsConnected && hasConnectedOnce && (
   <span className="text-xs text-yellow-400 animate-pulse">reconnecting…</span>
 )}
 ```
-> Use the `wsConnected` boolean returned from `useContainerEvents`. The header's `flex items-center gap-2` container (line 158) accommodates the extra inline element without layout changes.
+> Use destructured `{ wsConnected, hasConnectedOnce }` from `useContainerEvents`. The `hasConnectedOnce` guard prevents the "reconnecting…" banner from appearing on initial page load before the first WS connection is established. The header's `flex items-center gap-2` container (line 158) accommodates the extra inline element without layout changes.
 
 ---
 
@@ -291,15 +291,16 @@ interface WsMessage {
 ```
 > `ContainerInfo` is currently defined inline in `DashboardPage.tsx` — duplicate it here until a shared types package is created.
 
-**Hook signature** — follows React hooks convention (`use` prefix, returns primitive):
+**Hook signature** — follows React hooks convention (`use` prefix, returns object with named booleans):
 ```typescript
-export function useContainerEvents(queryClient: QueryClient): boolean {
+export function useContainerEvents(queryClient: QueryClient): { wsConnected: boolean; hasConnectedOnce: boolean } {
   const [wsConnected, setWsConnected] = useState(false)
+  const hasConnectedOnce = useRef(false)
   const wsRef = useRef<WebSocket | null>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const retryDelay = useRef(1000)
   // ...
-  return wsConnected
+  return { wsConnected, hasConnectedOnce: hasConnectedOnce.current }
 }
 ```
 
@@ -369,13 +370,18 @@ function getSession(request: FastifyRequest): SessionData {
 
 ### Authentication Middleware (preHandler)
 **Source:** `packages/server/src/middleware/verify-auth.ts` lines 1–25
-**Apply to:** `container-events.ts` — no new code needed; the global `fastify.addHook('preHandler', verifyAuth)` in `server.ts` line 31 already intercepts the WS upgrade request. `@fastify/websocket` README confirms preHandler runs before upgrade.
+**Apply to:** `container-events.ts` — add explicit `preHandler: [verifyAuth]` to the WS route options as belt-and-suspenders (per RESEARCH.md Open Question 1 resolution). The global `fastify.addHook('preHandler', verifyAuth)` in `server.ts` also runs, but per-route preHandler eliminates @fastify/websocket encapsulation ambiguity.
 ```typescript
-// verify-auth.ts — runs automatically for /api/containers/events
-await request.jwtVerify()
-const session = getSession(request.user.sessionId)
-if (!session) return reply.status(401).send({ error: 'Unauthorized' })
-;(request as unknown as Record<string, unknown>)['session'] = session
+// container-events.ts — belt-and-suspenders auth
+import { verifyAuth } from '../middleware/verify-auth.js'
+
+fastify.get(
+  '/api/containers/events',
+  { websocket: true, preHandler: [verifyAuth] },
+  (socket: WebSocket, req: FastifyRequest) => {
+    // ...
+  }
+)
 ```
 
 ### Error Handling (SSH exec failures)

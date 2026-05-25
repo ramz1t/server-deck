@@ -306,7 +306,8 @@ Output: A running Fastify server that maintains one persistent SSH `docker event
     - `await fastify.register(websocket)` appears BEFORE `await registerAuthPlugins(fastify)` in server.ts
     - `await fastify.register(containerEventsRoute)` appears AFTER `await fastify.register(containerRoutes)` in server.ts
     - `npx tsc --noEmit` in packages/server exits with code 0
-    - Route file uses `{ websocket: true }` in the get() options object
+    - Route file uses `{ websocket: true, preHandler: [verifyAuth] }` in the get() options object
+    - Route file imports `verifyAuth` from `'../middleware/verify-auth.js'`
     - Route file calls `eventsManager.addClient(socket, session)` and `eventsManager.removeClient(socket)` in the `close` handler
   </acceptance_criteria>
 
