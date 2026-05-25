@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planned
-last_updated: "2026-05-25T14:18:50.913Z"
+last_updated: "2026-05-25T12:57:14Z"
 progress:
   total_phases: 6
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
-  percent: 17
+  total_plans: 5
+  completed_plans: 5
+  percent: 20
 ---
 
 # ServerDeck — Project State
@@ -24,15 +24,15 @@ progress:
 
 | Field | Value |
 |-------|-------|
-| **Phase** | 1 — Auth Foundation |
-| **Plan** | ✅ Complete — all gates passed |
-| **Status** | Phase 1 complete — ready for Phase 2 |
+| **Phase** | 2 — Container Dashboard |
+| **Plan** | 01 — Docker SSH service + REST container routes ✅ |
+| **Status** | Plan 02-01 complete — ready for 02-02 (Container UI) |
 | **Milestone** | v1 |
 
 **Progress:**
 
-[░░░░░░░░░░] 0%
-[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0% — 0 of 6 phases complete (Phase 1 planned)
+[██░░░░░░░░] 20%
+[██████░░░░░░░░░░░░░░░░░░░░░░░░] 20% — Phase 2 in progress (1 of 2 plans complete)
 
 ```
 
@@ -43,7 +43,7 @@ progress:
 | Phase | Name | Status |
 |-------|------|--------|
 | 1 | Auth Foundation | **Planned** (3 plans ready) |
-| 2 | Container Dashboard | Not started |
+| 2 | Container Dashboard | **In Progress** (1/2 plans done) |
 | 3 | Real-Time Container Status | Not started |
 | 4 | Log Streaming | Not started |
 | 5 | SSH Terminal | Not started |
@@ -74,6 +74,8 @@ progress:
 - **Terminal**: `@xterm/xterm ^5.6.0` + `@xterm/addon-fit` + `@xterm/addon-attach`
 - **WebSocket**: `@fastify/websocket ^11.2.0` — auth hooks run before upgrade, solving the most critical WS auth pitfall
 - **Rate limiting**: `@fastify/rate-limit` on login endpoint (brute-force protection, AUTH-05)
+- **Docker SSH service**: `ssh2` Client opened per-request (no pooling) for Phase 2 simplicity
+- **Container ID validation**: `/^[a-zA-Z0-9]{12,64}$/` regex before shell interpolation to prevent injection
 
 ### Critical Pitfalls to Keep in Mind
 

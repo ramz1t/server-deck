@@ -53,7 +53,11 @@ Plans:
   3. User clicks "Start" on a stopped container; the container starts and the badge changes to running
   4. User clicks "Restart" on a running container; the container briefly stops then returns to running state
   5. All container actions require authentication — unauthenticated requests to action endpoints return 401
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-PLAN-docker-api.md — Docker SSH service, container list/action REST routes
+- [ ] 02-PLAN-container-ui.md — Container dashboard UI, TanStack Query, shadcn components
 **UI hint**: yes
 
 ---
