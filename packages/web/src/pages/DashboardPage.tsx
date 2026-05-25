@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Server, RefreshCw, AlertCircle, Layers } from 'lucide-react'
+import { Server, RefreshCw, AlertCircle, Layers, ChevronRight } from 'lucide-react'
 import { api } from '../lib/axios'
 import { ContainerCard } from '../components/ContainerCard'
 import { Button } from '../components/ui/button'
@@ -133,6 +133,23 @@ export function DashboardPage() {
   const hasStandalone = groups.some((g) => g.key.startsWith('__standalone__'))
   const showGroupHeaders = namedGroupCount > 1 || (namedGroupCount >= 1 && hasStandalone)
 
+  // Named groups are collapsed by default; empty set = all collapsed
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
+
+  function isExpanded(key: string): boolean {
+    if (key.startsWith('__standalone__')) return true
+    return expandedGroups.has(key)
+  }
+
+  function toggleGroup(key: string) {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
+
   return (
     <div className="min-h-svh flex flex-col bg-background">
       {/* Sticky header */}
@@ -216,31 +233,64 @@ export function DashboardPage() {
           )}
 
           {/* Grouped container list */}
-          {!isLoading && !isError && groups.map((group) => (
-            <div key={group.key}>
-              {showGroupHeaders && !group.key.startsWith('__standalone__') && (
-                <div className="flex items-center gap-2 pt-2 pb-1">
-                  <Layers className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {group.label}
-                  </span>
-                  <div className="flex-1 h-px bg-zinc-800" />
-                </div>
-              )}
-              <div className="space-y-3">
-                {group.containers.map((container) => (
-                  <ContainerCard
-                    key={container.id}
-                    container={container}
-                    isActing={actingContainers.has(container.id)}
-                    onStart={(id) => handleAction(id, 'start')}
-                    onStop={(id) => handleAction(id, 'stop')}
-                    onRestart={(id) => handleAction(id, 'restart')}
-                  />
-                ))}
+          {!isLoading && !isError && groups.map((group) => {
+            const isNamed = !group.key.startsWith('__standalone__')
+            const expanded = isExpanded(group.key)
+            const runningCount = group.containers.filter((c) => c.state === 'running').length
+            const totalCount = group.containers.length
+            const allRunning = runningCount === totalCount
+            const someRunning = runningCount > 0
+
+            return (
+              <div key={group.key}>
+                {showGroupHeaders && isNamed && (
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.key)}
+                    className="w-full flex items-center gap-2 pt-2 pb-1 text-left group"
+                    aria-expanded={expanded}
+                  >
+                    <Layers className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex-1">
+                      {group.label}
+                    </span>
+                    <span
+                      className={[
+                        'text-xs font-semibold tabular-nums px-1.5 py-0.5 rounded',
+                        allRunning
+                          ? 'text-green-400 bg-green-500/10'
+                          : someRunning
+                          ? 'text-yellow-400 bg-yellow-500/10'
+                          : 'text-red-400 bg-red-500/10',
+                      ].join(' ')}
+                    >
+                      {runningCount}/{totalCount}
+                    </span>
+                    <ChevronRight
+                      className={[
+                        'h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 shrink-0',
+                        expanded ? 'rotate-90' : '',
+                      ].join(' ')}
+                    />
+                  </button>
+                )}
+                {expanded && (
+                  <div className="space-y-3">
+                    {group.containers.map((container) => (
+                      <ContainerCard
+                        key={container.id}
+                        container={container}
+                        isActing={actingContainers.has(container.id)}
+                        onStart={(id) => handleAction(id, 'start')}
+                        onStop={(id) => handleAction(id, 'stop')}
+                        onRestart={(id) => handleAction(id, 'restart')}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            )
+          })}
 
         </div>
       </main>
