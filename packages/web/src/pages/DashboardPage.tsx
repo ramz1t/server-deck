@@ -6,6 +6,7 @@ import { api } from '../lib/axios'
 import { ContainerCard } from '../components/ContainerCard'
 import { Button } from '../components/ui/button'
 import { Skeleton } from '../components/ui/skeleton'
+import { useContainerEvents } from '../hooks/useContainerEvents'
 
 interface ContainerInfo {
   id: string
@@ -83,6 +84,7 @@ export function DashboardPage() {
   const navigate = useNavigate()
   const { host, username } = useOutletContext<DashboardContext>()
   const queryClient = useQueryClient()
+  const { wsConnected, hasConnectedOnce } = useContainerEvents(queryClient)
   const [actingContainers, setActingContainers] = useState<Set<string>>(new Set())
 
   const {
@@ -94,7 +96,7 @@ export function DashboardPage() {
   } = useQuery<ContainerInfo[]>({
     queryKey: ['containers'],
     queryFn: fetchContainers,
-    refetchInterval: 5000,
+    refetchInterval: wsConnected ? false : 5000,
   })
 
   const mutation = useMutation({
@@ -162,6 +164,11 @@ export function DashboardPage() {
               {username}@{host}
             </span>
           </div>
+          {!wsConnected && hasConnectedOnce && (
+            <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded-full shrink-0">
+              reconnecting…
+            </span>
+          )}
           <div className="flex items-center gap-2 shrink-0">
             <Button
               variant="ghost"
