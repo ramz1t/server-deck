@@ -8,10 +8,10 @@
 ### Authentication
 
 - [x] **AUTH-01**: User can log in with username and password via a login form
-- [ ] **AUTH-02**: User receives a secure httpOnly JWT cookie upon successful login
-- [ ] **AUTH-03**: Session persists across browser refresh (cookie-based, not localStorage)
-- [ ] **AUTH-04**: User can log out and the session cookie is invalidated
-- [ ] **AUTH-05**: Login endpoint is rate-limited to prevent brute-force attacks
+- [x] **AUTH-02**: User receives a secure httpOnly JWT cookie upon successful login
+- [x] **AUTH-03**: Session persists across browser refresh (cookie-based, not localStorage)
+- [x] **AUTH-04**: User can log out and the session cookie is invalidated
+- [x] **AUTH-05**: Login endpoint is rate-limited to prevent brute-force attacks
 - [x] **AUTH-06**: All API routes (REST and WebSocket) reject unauthenticated requests
 
 ### Container Dashboard
