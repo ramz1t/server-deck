@@ -36,9 +36,9 @@
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-PLAN-scaffold.md — Monorepo scaffold: pnpm workspaces, Fastify 5 skeleton, React/Vite/Tailwind v4/shadcn/ui
-- [ ] 01-PLAN-backend-auth.md — SSH auth service, session Map, JWT cookie endpoints, auth middleware
-- [ ] 01-PLAN-frontend-auth.md — Axios client, login page (UI-SPEC), ProtectedRoute, dashboard stub, Vite proxy
+- [x] 01-PLAN-scaffold.md — Monorepo scaffold: pnpm workspaces, Fastify 5 skeleton, React/Vite/Tailwind v4/shadcn/ui
+- [x] 01-PLAN-backend-auth.md — SSH auth service, session Map, JWT cookie endpoints, auth middleware
+- [x] 01-PLAN-frontend-auth.md — Axios client, login page (UI-SPEC), ProtectedRoute, dashboard stub, Vite proxy
 
 ---
 

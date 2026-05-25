@@ -25,8 +25,8 @@ progress:
 | Field | Value |
 |-------|-------|
 | **Phase** | 1 — Auth Foundation |
-| **Plan** | Ready for execution (3 plans, 3 waves) |
-| **Status** | Planned — awaiting `/gsd-execute-phase 1` |
+| **Plan** | All 3 plans complete — awaiting verification |
+| **Status** | Executing — all plans built, verification next |
 | **Milestone** | v1 |
 
 **Progress:**
