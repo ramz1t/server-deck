@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planned
-last_updated: "2026-05-25T12:57:14Z"
+status: in_progress
+last_updated: "2026-05-25T13:10:00Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 5
-  completed_plans: 5
-  percent: 20
+  completed_plans: 6
+  percent: 33
 ---
 
 # ServerDeck — Project State
@@ -25,14 +25,14 @@ progress:
 | Field | Value |
 |-------|-------|
 | **Phase** | 2 — Container Dashboard |
-| **Plan** | 01 — Docker SSH service + REST container routes ✅ |
-| **Status** | Plan 02-01 complete — ready for 02-02 (Container UI) |
+| **Plan** | 02 — Container dashboard UI ✅ |
+| **Status** | Phase 2 complete — all plans done |
 | **Milestone** | v1 |
 
 **Progress:**
 
-[██░░░░░░░░] 20%
-[██████░░░░░░░░░░░░░░░░░░░░░░░░] 20% — Phase 2 in progress (1 of 2 plans complete)
+[████░░░░░░] 33%
+[████████████████████░░░░░░░░░░] 33% — Phase 2 complete (2 of 2 plans done)
 
 ```
 
@@ -43,7 +43,7 @@ progress:
 | Phase | Name | Status |
 |-------|------|--------|
 | 1 | Auth Foundation | **Planned** (3 plans ready) |
-| 2 | Container Dashboard | **In Progress** (1/2 plans done) |
+| 2 | Container Dashboard | **Complete** (2/2 plans done) |
 | 3 | Real-Time Container Status | Not started |
 | 4 | Log Streaming | Not started |
 | 5 | SSH Terminal | Not started |
@@ -76,6 +76,7 @@ progress:
 - **Rate limiting**: `@fastify/rate-limit` on login endpoint (brute-force protection, AUTH-05)
 - **Docker SSH service**: `ssh2` Client opened per-request (no pooling) for Phase 2 simplicity
 - **Container ID validation**: `/^[a-zA-Z0-9]{12,64}$/` regex before shell interpolation to prevent injection
+- **Mutation acting state**: Used onSuccess/onError separately (not onSettled) for void mutations — avoids undefined first arg issue
 
 ### Critical Pitfalls to Keep in Mind
 
