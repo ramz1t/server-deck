@@ -1,6 +1,7 @@
 import Fastify from 'fastify'
 import { registerAuthPlugins } from './plugins/auth-plugins.js'
 import { authRoutes } from './routes/auth.js'
+import { containerRoutes } from './routes/containers.js'
 import { verifyAuth } from './middleware/verify-auth.js'
 
 export async function buildServer() {
@@ -30,6 +31,7 @@ export async function buildServer() {
   fastify.addHook('preHandler', verifyAuth)
 
   await fastify.register(authRoutes)
+  await fastify.register(containerRoutes)
 
   fastify.get('/health', async () => ({ ok: true }))
 
