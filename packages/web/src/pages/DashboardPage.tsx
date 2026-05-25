@@ -121,6 +121,13 @@ export function DashboardPage() {
     mutation.mutate({ id, action })
   }
 
+  function handleLogs(id: string) {
+    const container = containers?.find((c) => c.id === id)
+    navigate(`/logs/${id}`, {
+      state: { name: container?.names[0] ?? id.slice(0, 12) },
+    })
+  }
+
   async function handleLogout() {
     try {
       await api.post('/auth/logout')
@@ -299,6 +306,7 @@ export function DashboardPage() {
                         onStart={(id) => handleAction(id, 'start')}
                         onStop={(id) => handleAction(id, 'stop')}
                         onRestart={(id) => handleAction(id, 'restart')}
+                        onLogs={handleLogs}
                       />
                     ))}
                   </div>

@@ -28,6 +28,7 @@ interface ContainerCardProps {
   onStart: (id: string) => void
   onStop: (id: string) => void
   onRestart: (id: string) => void
+  onLogs: (id: string) => void
   isActing: boolean
 }
 
@@ -61,6 +62,7 @@ export function ContainerCard({
   onStart,
   onStop,
   onRestart,
+  onLogs,
   isActing,
 }: ContainerCardProps) {
   const containerName = container.names[0] ?? container.shortId
@@ -83,6 +85,15 @@ export function ContainerCard({
 
       {/* Action buttons */}
       <div className="flex justify-end gap-2">
+        {/* Logs — always visible regardless of container state (D-P4-01) */}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="min-h-[44px] h-11"
+          onClick={() => onLogs(container.id)}
+        >
+          Logs
+        </Button>
         {container.state === 'running' && (
           <>
             {/* Restart */}
