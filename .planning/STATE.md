@@ -1,3 +1,17 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: unknown
+last_updated: "2026-05-25T08:40:50.183Z"
+progress:
+  total_phases: 6
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
+---
+
 # ServerDeck — Project State
 
 **Project:** ServerDeck  
@@ -16,6 +30,7 @@
 | **Milestone** | v1 |
 
 **Progress:**
+
 ```
 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0% — 0 of 6 phases complete
 ```
@@ -103,6 +118,7 @@ None.
 ## Session Continuity
 
 To resume work on this project:
+
 1. Read `.planning/ROADMAP.md` → identify current phase
 2. Read `.planning/STATE.md` → this file, for context and decisions
 3. Run `/gsd-plan-phase N` to create a plan for the next phase
