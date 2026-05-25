@@ -11,7 +11,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Auth Foundation** — Users can securely log in, maintain sessions, and log out; all routes are protected
+- [x] **Phase 1: Auth Foundation** — Users can securely log in, maintain sessions, and log out; all routes are protected
 - [ ] **Phase 2: Container Dashboard** — Users can see every Docker container and start, stop, or restart them
 - [ ] **Phase 3: Real-Time Container Status** — Container list updates live without a page reload
 - [ ] **Phase 4: Log Streaming** — Users can watch live container logs stream in the browser
