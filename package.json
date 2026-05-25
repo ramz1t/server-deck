@@ -1,0 +1,13 @@
+{
+  "name": "serverdeck",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter @serverdeck/server dev\" \"pnpm --filter @serverdeck/web dev\"",
+    "build": "pnpm --filter @serverdeck/server build && pnpm --filter @serverdeck/web build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
