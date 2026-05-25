@@ -31,8 +31,8 @@
   1. User submits username + password on the login page and is redirected to the dashboard — no token visible in the URL or localStorage
   2. After a browser refresh, the user is still logged in (httpOnly cookie persists the session)
   3. User clicks "Log out" and is returned to the login page; a subsequent API call returns 401
-  4. Submitting the wrong password 6+ times in rapid succession is rejected with 429 Too Many Requests
-  5. Accessing `/api/*` or any WebSocket upgrade without a valid cookie returns 401 before any Docker code runs
+  4. Submitting the wrong password 11+ times in 60 seconds is rejected with 429 Too Many Requests (rate limit: max 10/min per IP, per D-18)
+  5. Accessing `/api/*` without a valid cookie returns 401 before any Docker code runs (WebSocket rejection verified in Phase 3 when WS routes are added)
 **Plans**: 3 plans
 
 Plans:

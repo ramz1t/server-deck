@@ -25,7 +25,7 @@ must_haves:
     - "Visiting http://localhost:5173/ with no active session shows a loading spinner then redirects to /login"
     - "After login, refreshing http://localhost:5173/ keeps the user on the dashboard (cookie persists across refresh)"
     - "Clicking Log out on the dashboard redirects to /login; a subsequent GET /api/auth/me returns 401"
-    - "Host and Port fields are pre-filled from localStorage on the login page after a prior login"
+    - "Host, Port, and Username fields are pre-filled from localStorage on the login page after a prior login (agent's discretion: username is convenience pre-fill per D-09 scope)"
     - "Password field is never pre-filled"
     - "On a 390px-wide viewport, the login card has no horizontal scroll and all inputs are touchable (iOS auto-zoom prevented by text-base class)"
   artifacts:
@@ -123,7 +123,7 @@ Output:
 
     On mount useEffect: call `api.get('/auth/me').then(() => navigate('/', { replace: true })).catch(() => {})` — if already authenticated, skip the login page (per UI-SPEC "already authenticated" guard). The .catch is intentional (not authenticated = expected, stay on /login).
 
-    Form submit handler `handleSubmit(e: React.FormEvent)`: call `e.preventDefault()`. Set `isLoading = true`, `error = null`. Persist to localStorage: `localStorage.setItem('sd_host', host)`, `localStorage.setItem('sd_port', port)`, `localStorage.setItem('sd_username', username)` — per D-09. Do NOT store password. Call `api.post('/auth/login', { host, port: Number(port), username, password })`. On success: `navigate('/')`. On error: check `error.response?.status`. If 401: set error to `"Invalid credentials. Check your host, port, and try again."` (exact copy from UI-SPEC). If 429: set error to `"Too many attempts. Wait a minute and try again."`. Otherwise (network/timeout): set error to `"Connection timed out. Verify host and port are reachable."`. Always set `isLoading = false` in finally.
+    Form submit handler `handleSubmit(e: React.FormEvent)`: call `e.preventDefault()`. Set `isLoading = true`, `error = null`.     Persist to localStorage: `localStorage.setItem('sd_host', host)`, `localStorage.setItem('sd_port', port)` — per D-09. `localStorage.setItem('sd_username', username)` — agent's discretion: username is convenience pre-fill, not sensitive (D-09 only mandates host/port; password is NEVER stored). Do NOT store password. Call `api.post('/auth/login', { host, port: Number(port), username, password })`. On success: `navigate('/')`. On error: check `error.response?.status`. If 401: set error to `"Invalid credentials. Check your host, port, and try again."` (exact copy from UI-SPEC). If 429: set error to `"Too many attempts. Wait a minute and try again."`. Otherwise (network/timeout): set error to `"Connection timed out. Verify host and port are reachable."`. Always set `isLoading = false` in finally.
 
     Layout structure (must match UI-SPEC exactly):
     - Outer div: `className="min-h-svh flex items-center justify-center bg-background px-4"`
