@@ -243,6 +243,14 @@ export function DashboardPage() {
 
             return (
               <div key={group.key}>
+                {showGroupHeaders && !isNamed && (
+                  <div className="flex items-center gap-2 pt-2 pb-1">
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      Other
+                    </span>
+                    <div className="flex-1 h-px bg-zinc-800" />
+                  </div>
+                )}
                 {showGroupHeaders && isNamed && (
                   <button
                     type="button"
