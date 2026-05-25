@@ -86,37 +86,37 @@
 
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
+Which phases cover which requirements. Confirmed during roadmap creation (2026-05-25).
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
-| AUTH-03 | Phase 1 | Pending |
-| AUTH-04 | Phase 1 | Pending |
-| AUTH-05 | Phase 1 | Pending |
-| AUTH-06 | Phase 1 | Pending |
-| CONT-01 | Phase 2 | Pending |
-| CONT-02 | Phase 2 | Pending |
-| CONT-03 | Phase 3 | Pending |
-| CONT-04 | Phase 2 | Pending |
-| CONT-05 | Phase 2 | Pending |
-| CONT-06 | Phase 2 | Pending |
-| LOGS-01 | Phase 4 | Pending |
-| LOGS-02 | Phase 4 | Pending |
-| LOGS-03 | Phase 4 | Pending |
-| LOGS-04 | Phase 4 | Pending |
-| SSH-01 | Phase 5 | Pending |
-| SSH-02 | Phase 5 | Pending |
-| SSH-03 | Phase 5 | Pending |
-| SSH-04 | Phase 5 | Pending |
-| SSH-05 | Phase 5 | Pending |
-| SSH-06 | Phase 5 | Pending |
-| MOBL-01 | Phase 6 | Pending |
-| MOBL-02 | Phase 6 | Pending |
-| MOBL-03 | Phase 6 | Pending |
-| MOBL-04 | Phase 6 | Pending |
-| MOBL-05 | Phase 6 | Pending |
+| Requirement | Phase | Phase Name | Status |
+|-------------|-------|------------|--------|
+| AUTH-01 | Phase 1 | Auth Foundation | Pending |
+| AUTH-02 | Phase 1 | Auth Foundation | Pending |
+| AUTH-03 | Phase 1 | Auth Foundation | Pending |
+| AUTH-04 | Phase 1 | Auth Foundation | Pending |
+| AUTH-05 | Phase 1 | Auth Foundation | Pending |
+| AUTH-06 | Phase 1 | Auth Foundation | Pending |
+| CONT-01 | Phase 2 | Container Dashboard | Pending |
+| CONT-02 | Phase 2 | Container Dashboard | Pending |
+| CONT-03 | Phase 3 | Real-Time Container Status | Pending |
+| CONT-04 | Phase 2 | Container Dashboard | Pending |
+| CONT-05 | Phase 2 | Container Dashboard | Pending |
+| CONT-06 | Phase 2 | Container Dashboard | Pending |
+| LOGS-01 | Phase 4 | Log Streaming | Pending |
+| LOGS-02 | Phase 4 | Log Streaming | Pending |
+| LOGS-03 | Phase 4 | Log Streaming | Pending |
+| LOGS-04 | Phase 4 | Log Streaming | Pending |
+| SSH-01 | Phase 5 | SSH Terminal | Pending |
+| SSH-02 | Phase 5 | SSH Terminal | Pending |
+| SSH-03 | Phase 5 | SSH Terminal | Pending |
+| SSH-04 | Phase 5 | SSH Terminal | Pending |
+| SSH-05 | Phase 5 | SSH Terminal | Pending |
+| SSH-06 | Phase 5 | SSH Terminal | Pending |
+| MOBL-01 | Phase 6 | Mobile Polish + Hardening | Pending |
+| MOBL-02 | Phase 6 | Mobile Polish + Hardening | Pending |
+| MOBL-03 | Phase 6 | Mobile Polish + Hardening | Pending |
+| MOBL-04 | Phase 6 | Mobile Polish + Hardening | Pending |
+| MOBL-05 | Phase 6 | Mobile Polish + Hardening | Pending |
 
 **Coverage:**
 - v1 requirements: 27 total
