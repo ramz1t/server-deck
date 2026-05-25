@@ -89,7 +89,11 @@ Plans:
   2. New log lines written by the container appear in the browser within 1 second, auto-scrolling to the bottom
   3. ANSI colour codes in logs render as coloured text (not raw escape sequences)
   4. User closes the log view; the WebSocket and underlying Docker log stream are both terminated — no lingering file descriptors
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 04-01-PLAN-server-log-ws.md — WS route GET /api/containers/:id/logs + server.ts registration
+- [ ] 04-02-PLAN-frontend-log-view.md — ansi-to-html + useLogStream hook + LogPage + ContainerCard Logs button + App.tsx route
 **UI hint**: yes
 
 ---
