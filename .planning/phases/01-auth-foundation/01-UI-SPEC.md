@@ -1,7 +1,8 @@
 ---
 phase: 1
 slug: auth-foundation
-status: draft
+status: approved
+reviewed_at: 2026-05-25
 shadcn_initialized: false
 preset: "zinc dark — initialize with: npx shadcn@latest init (select Tailwind v4, Vite, React, TypeScript, zinc, dark)"
 created: 2026-05-25
@@ -123,7 +124,7 @@ Declared values (all multiples of 4):
 |------|------|--------|-------------|----------------|-------|
 | Display | 24px | 700 | 1.2 | `text-2xl font-bold` | "ServerDeck" app name in card header |
 | Body | 14px | 400 | 1.5 | `text-sm font-normal` | Muted sub-text, card description |
-| Label | 14px | 500 | 1.4 | `text-sm font-medium` | Form field labels |
+| Label | 14px | 400 | 1.4 | `text-sm font-normal` | Form field labels |
 | Small | 12px | 400 | 1.4 | `text-xs font-normal` | Error messages, helper text |
 
 > **iOS zoom prevention:** Form `<input>` elements MUST use `text-base` (16px) or have
@@ -149,6 +150,7 @@ Declared values (all multiples of 4):
 1. The "Connect" submit button (background fill)
 2. Focus ring on the currently active form input
 3. The `<Loader2>` spinner inside the button during loading state
+4. The `<Server>` branding icon in the card header (branding exception — accent used decoratively alongside the app name only, not for interactive meaning)
 
 **Accent is NOT used for:** labels, headings, card borders, secondary actions, navigation.
 
@@ -182,6 +184,8 @@ All components sourced from **shadcn official registry only**.
 ---
 
 ## Login Page — Full Layout Spec
+
+**Focal point:** The full-width blue "Connect" button is the primary visual anchor — every element above it leads the eye downward to this action. Secondary anchor: the ServerDeck heading + `<Server>` icon in the card header establish brand identity at the top. The form fields between them create a clear top-to-bottom reading path.
 
 ### Viewport Centering
 
