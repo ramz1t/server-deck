@@ -62,21 +62,16 @@ export function DashboardPage() {
     onMutate: ({ id }) => {
       setActingContainers((prev) => new Set(prev).add(id))
     },
-    onSuccess: (_data, { id }) => {
-      setActingContainers((prev) => {
-        const next = new Set(prev)
-        next.delete(id)
-        return next
-      })
-      queryClient.invalidateQueries({ queryKey: ['containers'] })
-    },
-    onError: (_err, { id }) => {
-      setActingContainers((prev) => {
-        const next = new Set(prev)
-        next.delete(id)
-        return next
-      })
-      queryClient.invalidateQueries({ queryKey: ['containers'] })
+    onSettled: (_data, _err, variables) => {
+      // Always clean up acting state and refresh list — regardless of success/failure (IN-03)
+      if (variables) {
+        setActingContainers((prev) => {
+          const next = new Set(prev)
+          next.delete(variables.id)
+          return next
+        })
+      }
+      void queryClient.invalidateQueries({ queryKey: ['containers'] })
     },
   })
 

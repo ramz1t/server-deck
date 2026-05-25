@@ -11,7 +11,12 @@ import type { SessionData } from '../types/session.js'
 type ActionParams = { id: string }
 
 function getSession(request: FastifyRequest): SessionData {
-  return (request as unknown as { session: SessionData }).session
+  const session = (request as unknown as { session?: SessionData }).session
+  if (!session) {
+    // Should never happen — verifyAuth preHandler always runs first (WR-02)
+    throw new Error('session missing from request — verifyAuth did not run')
+  }
+  return session
 }
 
 export async function containerRoutes(fastify: FastifyInstance): Promise<void> {

@@ -58,35 +58,44 @@ async function sshExec(session: SessionData, command: string): Promise<string> {
 
 export async function listContainers(session: SessionData): Promise<ContainerInfo[]> {
   const raw = await sshExec(session, `docker ps -a --no-trunc --format '{{json .}}'`)
-  return raw
-    .trim()
-    .split('\n')
-    .filter((line) => line.trim())
-    .map((line) => {
-      const obj = JSON.parse(line)
-      const names = (obj.Names as string)
-        .split(',')
-        .map((n: string) => n.replace(/^\//, '').trim())
-      return {
-        id: obj.ID as string,
-        shortId: (obj.ID as string).slice(0, 12),
-        names,
-        image: obj.Image as string,
-        status: obj.Status as string,
-        state: (obj.State as string).toLowerCase(),
-        createdAt: obj.CreatedAt as string,
-      }
+  const results: ContainerInfo[] = []
+  for (const line of raw.trim().split('\n')) {
+    if (!line.trim()) continue
+    let obj: Record<string, unknown>
+    try {
+      obj = JSON.parse(line)
+    } catch {
+      // Skip non-JSON lines (e.g. Docker daemon warnings) rather than failing the whole list (WR-01)
+      continue
+    }
+    const names = (obj.Names as string)
+      .split(',')
+      .map((n: string) => n.replace(/^\//, '').trim())
+    results.push({
+      id: obj.ID as string,
+      shortId: (obj.ID as string).slice(0, 12),
+      names,
+      image: obj.Image as string,
+      status: obj.Status as string,
+      state: (obj.State as string).toLowerCase(),
+      createdAt: obj.CreatedAt as string,
     })
+  }
+  return results
 }
 
 export async function startContainer(session: SessionData, id: string): Promise<void> {
+  // Defense-in-depth: validate ID at service layer too (CR-01)
+  if (!isValidContainerId(id)) throw new Error(`Invalid container ID: ${id}`)
   await sshExec(session, `docker start ${id}`)
 }
 
 export async function stopContainer(session: SessionData, id: string): Promise<void> {
+  if (!isValidContainerId(id)) throw new Error(`Invalid container ID: ${id}`)
   await sshExec(session, `docker stop ${id}`)
 }
 
 export async function restartContainer(session: SessionData, id: string): Promise<void> {
+  if (!isValidContainerId(id)) throw new Error(`Invalid container ID: ${id}`)
   await sshExec(session, `docker restart ${id}`)
 }
