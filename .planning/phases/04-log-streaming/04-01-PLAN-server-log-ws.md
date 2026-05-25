@@ -147,11 +147,11 @@ close handler can reference it. Same pattern for the conn reference.
 Export the plugin as `export const containerLogsRoute: FastifyPluginAsync = async (fastify) => { ... }`.
   </action>
   <verify>
-    <automated>cd packages/server && npx tsc --noEmit 2>&1 | head -30</automated>
+    <automated>pnpm --filter @serverdeck/server tsc --noEmit 2>&1 | head -30</automated>
   </verify>
   <done>
     - `packages/server/src/routes/container-logs.ts` exists and exports `containerLogsRoute`
-    - `npx tsc --noEmit` passes with no errors on the server package
+    - `pnpm --filter @serverdeck/server tsc --noEmit` passes with no errors
     - Route uses `{ websocket: true, preHandler: [verifyAuth] }` options
     - `isValidContainerId` called before SSH exec; socket closed with 1008 on failure
     - `stream.destroy()` present in `socket.on('close')` handler (not `stream.close()`)
@@ -181,12 +181,12 @@ Modify `packages/server/src/server.ts`. Two changes only:
 No other changes to server.ts. Do not reorder existing registrations.
   </action>
   <verify>
-    <automated>cd packages/server && npx tsc --noEmit 2>&1 | head -30</automated>
+    <automated>pnpm --filter @serverdeck/server tsc --noEmit 2>&1 | head -30</automated>
   </verify>
   <done>
     - `server.ts` imports `containerLogsRoute` from `./routes/container-logs.js`
     - `await fastify.register(containerLogsRoute)` appears after `containerEventsRoute` registration
-    - `npx tsc --noEmit` still passes with no errors
+    - `pnpm --filter @serverdeck/server tsc --noEmit` still passes with no errors
   </done>
 </task>
 
@@ -219,7 +219,7 @@ After both tasks complete:
 
 ```bash
 # TypeScript clean compile
-cd packages/server && npx tsc --noEmit
+pnpm --filter @serverdeck/server tsc --noEmit
 
 # Route file exists and exports the plugin
 grep -c "containerLogsRoute" packages/server/src/routes/container-logs.ts
@@ -244,7 +244,7 @@ grep -n "containerEventsRoute\|containerLogsRoute" packages/server/src/server.ts
 - `stream.destroy()` fires in `socket.on('close')` handler (LOGS-04 compliance)
 - `conn.end()` fires in close handler, error handler, and exec error path
 - `server.ts` registers `containerLogsRoute` after `containerEventsRoute`
-- `npx tsc --noEmit` passes with zero errors on `packages/server`
+- `pnpm --filter @serverdeck/server tsc --noEmit` passes with zero errors
 </success_criteria>
 
 <output>

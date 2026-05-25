@@ -10,6 +10,7 @@ files_modified:
   - packages/web/src/hooks/useLogStream.ts
   - packages/web/src/pages/LogPage.tsx
   - packages/web/src/components/ContainerCard.tsx
+  - packages/web/src/pages/DashboardPage.tsx
   - packages/web/src/App.tsx
 autonomous: true
 requirements:
@@ -161,7 +162,7 @@ close wsRef.current. This is what triggers `stream.destroy()` on the server side
 Return `{ lines, connected }`.
   </action>
   <verify>
-    <automated>cd packages/web && npx tsc --noEmit 2>&1 | head -30</automated>
+    <automated>pnpm --filter @serverdeck/web tsc --noEmit 2>&1 | head -30</automated>
   </verify>
   <done>
     - `ansi-to-html` appears in `packages/web/package.json` dependencies
@@ -169,7 +170,7 @@ Return `{ lines, connected }`.
     - `useLogStream(containerId)` returns `{ lines: string[], connected: boolean }`
     - 5000-line cap with `slice(next.length - 5000)` present in onmessage handler
     - Cleanup function closes WS and cancels reconnect timer
-    - `npx tsc --noEmit` passes with no errors on `packages/web`
+    - `pnpm --filter @serverdeck/web tsc --noEmit` passes with no errors
   </done>
 </task>
 
@@ -317,7 +318,7 @@ From PATTERNS.md resume button block:
 ```
   </action>
   <verify>
-    <automated>cd packages/web && npx tsc --noEmit 2>&1 | head -30</automated>
+    <automated>pnpm --filter @serverdeck/web tsc --noEmit 2>&1 | head -30</automated>
   </verify>
   <done>
     - `packages/web/src/pages/LogPage.tsx` exists and exports `LogPage`
@@ -327,7 +328,7 @@ From PATTERNS.md resume button block:
     - `handleScroll` detects >50px from bottom and sets `showResume(true)`
     - `dangerouslySetInnerHTML={{ __html: html }}` used for ANSI-converted lines
     - Back button navigates to `/`; container name shown in header
-    - `npx tsc --noEmit` passes with no errors
+    - `pnpm --filter @serverdeck/web tsc --noEmit` passes with no errors
   </done>
 </task>
 
@@ -414,7 +415,7 @@ Open `packages/web/src/pages/DashboardPage.tsx` and make these two targeted chan
    `onLogs={handleLogs}` prop.
   </action>
   <verify>
-    <automated>cd packages/web && npx tsc --noEmit 2>&1 | head -30</automated>
+    <automated>pnpm --filter @serverdeck/web tsc --noEmit 2>&1 | head -30</automated>
   </verify>
   <done>
     - `ContainerCardProps` has `onLogs: (id: string) => void`
@@ -422,7 +423,7 @@ Open `packages/web/src/pages/DashboardPage.tsx` and make these two targeted chan
     - `App.tsx` imports `LogPage` and has `<Route path="logs/:containerId" element={<LogPage />}>`
     - `DashboardPage.tsx` has `handleLogs` that calls `navigate('/logs/${id}', { state: { name } })`
     - `<ContainerCard onLogs={handleLogs} ...>` in DashboardPage (all call sites)
-    - `npx tsc --noEmit` passes with no errors on `packages/web`
+    - `pnpm --filter @serverdeck/web tsc --noEmit` passes with no errors
   </done>
 </task>
 
@@ -453,7 +454,7 @@ After all tasks complete:
 
 ```bash
 # TypeScript clean compile
-cd packages/web && npx tsc --noEmit
+pnpm --filter @serverdeck/web tsc --noEmit
 
 # ansi-to-html in package.json
 grep "ansi-to-html" packages/web/package.json
@@ -487,7 +488,7 @@ grep "state.*name" packages/web/src/pages/DashboardPage.tsx
 - ContainerCard `<Button variant="ghost">Logs</Button>` present before state-conditional buttons
 - `onLogs(container.id)` callback wired; DashboardPage calls `navigate('/logs/${id}', { state: { name } })`
 - `/logs/:containerId` nested inside existing `<Route path="/" element={<ProtectedRoute />}>` in App.tsx
-- `npx tsc --noEmit` passes with zero errors on `packages/web`
+- `pnpm --filter @serverdeck/web tsc --noEmit` passes with zero errors
 </success_criteria>
 
 <output>
