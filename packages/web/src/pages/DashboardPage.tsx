@@ -44,37 +44,37 @@ async function containerAction(
  * Containers that don't match the pattern are treated as standalone.
  */
 function groupContainersByProject(containers: ContainerInfo[]): ContainerGroup[] {
-  const groups = new Map<string, ContainerInfo[]>()
+  const namedGroups = new Map<string, ContainerInfo[]>()
+  const standalone: ContainerInfo[] = []
 
   for (const c of containers) {
     const name = c.names[0] ?? c.shortId
-    // At least 2 dashes with a trailing numeric replica: project-service-N
     const match = name.match(/^(.+)-[^-]+-\d+$/)
-    const key = match ? match[1] : `__standalone__${name}`
-
-    if (!groups.has(key)) groups.set(key, [])
-    groups.get(key)!.push(c)
+    if (match) {
+      const key = match[1]
+      if (!namedGroups.has(key)) namedGroups.set(key, [])
+      namedGroups.get(key)!.push(c)
+    } else {
+      standalone.push(c)
+    }
   }
 
   const result: ContainerGroup[] = []
-  for (const [key, items] of groups) {
-    const isStandalone = key.startsWith('__standalone__')
-    result.push({
-      key,
-      label: isStandalone ? (items[0].names[0] ?? items[0].shortId) : key,
-      containers: items,
-    })
+
+  for (const [key, items] of namedGroups) {
+    result.push({ key, label: key, containers: items })
   }
 
-  // Named project groups first (alphabetical), standalone last
-  result.sort((a, b) => {
-    const aStandalone = a.key.startsWith('__standalone__')
-    const bStandalone = b.key.startsWith('__standalone__')
-    if (aStandalone && bStandalone) return a.label.localeCompare(b.label)
-    if (aStandalone) return 1
-    if (bStandalone) return -1
-    return a.label.localeCompare(b.label)
-  })
+  // Sort named groups alphabetically
+  result.sort((a, b) => a.label.localeCompare(b.label))
+
+  // All standalone containers go into one group at the end
+  if (standalone.length > 0) {
+    standalone.sort((a, b) =>
+      (a.names[0] ?? a.shortId).localeCompare(b.names[0] ?? b.shortId),
+    )
+    result.push({ key: '__standalone__', label: 'Other', containers: standalone })
+  }
 
   return result
 }
@@ -137,7 +137,7 @@ export function DashboardPage() {
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
 
   function isExpanded(key: string): boolean {
-    if (key.startsWith('__standalone__')) return true
+    if (key === '__standalone__') return true
     return expandedGroups.has(key)
   }
 
@@ -234,7 +234,7 @@ export function DashboardPage() {
 
           {/* Grouped container list */}
           {!isLoading && !isError && groups.map((group) => {
-            const isNamed = !group.key.startsWith('__standalone__')
+            const isStandalone = group.key === '__standalone__'
             const expanded = isExpanded(group.key)
             const runningCount = group.containers.filter((c) => c.state === 'running').length
             const totalCount = group.containers.length
@@ -243,7 +243,7 @@ export function DashboardPage() {
 
             return (
               <div key={group.key}>
-                {showGroupHeaders && !isNamed && (
+                {showGroupHeaders && isStandalone && (
                   <div className="flex items-center gap-2 pt-2 pb-1">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Other
@@ -251,7 +251,7 @@ export function DashboardPage() {
                     <div className="flex-1 h-px bg-zinc-800" />
                   </div>
                 )}
-                {showGroupHeaders && isNamed && (
+                {showGroupHeaders && !isStandalone && (
                   <button
                     type="button"
                     onClick={() => toggleGroup(group.key)}
