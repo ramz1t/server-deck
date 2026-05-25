@@ -1,0 +1,83 @@
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
+import fastifyRateLimit from '@fastify/rate-limit'
+import { validateSshCredentials } from '../services/ssh-auth.js'
+import { setSession, getSession, deleteSession } from '../services/session-store.js'
+
+type LoginBody = {
+  host: string
+  port: number
+  username: string
+  password: string
+}
+
+export async function authRoutes(fastify: FastifyInstance): Promise<void> {
+  await fastify.register(fastifyRateLimit, { global: false })
+
+  fastify.post<{ Body: LoginBody }>(
+    '/api/auth/login',
+    {
+      config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
+      schema: {
+        body: {
+          type: 'object',
+          required: ['host', 'port', 'username', 'password'],
+          properties: {
+            host: { type: 'string', minLength: 1 },
+            port: { type: 'integer', minimum: 1, maximum: 65535 },
+            username: { type: 'string', minLength: 1 },
+            password: { type: 'string', minLength: 1 },
+          },
+        },
+      },
+    },
+    async (request: FastifyRequest<{ Body: LoginBody }>, reply: FastifyReply) => {
+      const { host, port, username, password } = request.body
+
+      const valid = await validateSshCredentials(host, port, username, password)
+      if (!valid) {
+        return reply.status(401).send({ error: 'Invalid credentials' })
+      }
+
+      const sessionId = crypto.randomUUID()
+      setSession(sessionId, { host, port, username, password })
+
+      const token = fastify.jwt.sign({ sessionId }, { expiresIn: '7d' })
+
+      reply.setCookie('sd_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60,
+        path: '/',
+      })
+
+      return reply.send({ ok: true })
+    }
+  )
+
+  fastify.post('/api/auth/logout', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const token = (request.cookies as Record<string, string | undefined>)['sd_token']
+      if (token) {
+        const decoded = fastify.jwt.decode<{ sessionId: string }>(token)
+        if (decoded?.sessionId) {
+          deleteSession(decoded.sessionId)
+        }
+      }
+    } catch {
+      // ignore invalid tokens on logout
+    }
+
+    reply.clearCookie('sd_token', { path: '/' })
+    return { ok: true }
+  })
+
+  fastify.get('/api/auth/me', async (request: FastifyRequest, reply: FastifyReply) => {
+    await request.jwtVerify()
+    const session = getSession(request.user.sessionId)
+    if (!session) {
+      return reply.status(401).send({ error: 'Session not found' })
+    }
+    return { ok: true, host: session.host, username: session.username }
+  })
+}
