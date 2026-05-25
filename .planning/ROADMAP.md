@@ -13,7 +13,7 @@
 
 - [x] **Phase 1: Auth Foundation** — Users can securely log in, maintain sessions, and log out; all routes are protected
 - [x] **Phase 2: Container Dashboard** — Users can see every Docker container and start, stop, or restart them
-- [ ] **Phase 3: Real-Time Container Status** — Container list updates live without a page reload
+- [x] **Phase 3: Real-Time Container Status** — Container list updates live without a page reload
 - [ ] **Phase 4: Log Streaming** — Users can watch live container logs stream in the browser
 - [ ] **Phase 5: SSH Terminal** — Users can open a full PTY-backed SSH terminal from a phone browser
 - [ ] **Phase 6: Mobile Polish + Hardening** — The entire app is production-ready on a phone; PWA installable
