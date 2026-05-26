@@ -29,8 +29,18 @@ export function TouchToolbar({ sendKey, className }: TouchToolbarProps) {
   const [ctrlActive, setCtrlActive] = useState(false)
 
   function handleKey(sequence: string) {
-    sendKey(sequence)
-    if (ctrlActive) setCtrlActive(false)
+    if (ctrlActive) {
+      // Apply Ctrl modifier: single-char sequences use charCode & 0x1f (ASCII ctrl codes).
+      // Multi-char sequences (arrows, Esc) are sent as-is — Ctrl+arrow isn't meaningful in PTY.
+      const modified =
+        sequence.length === 1
+          ? String.fromCharCode(sequence.charCodeAt(0) & 0x1f)
+          : sequence
+      sendKey(modified)
+      setCtrlActive(false)
+    } else {
+      sendKey(sequence)
+    }
   }
 
   function handleCtrl() {
