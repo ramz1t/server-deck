@@ -142,16 +142,16 @@ export function DashboardPage() {
   const hasStandalone = groups.some((g) => g.key.startsWith('__standalone__'))
   const showGroupHeaders = namedGroupCount > 1 || (namedGroupCount >= 1 && hasStandalone)
 
-  // Named groups are collapsed by default; empty set = all collapsed
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
+  // collapsedGroups tracks which groups are explicitly collapsed; empty set = all expanded
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set())
 
   function isExpanded(key: string): boolean {
     if (key === '__standalone__') return true
-    return expandedGroups.has(key)
+    return !collapsedGroups.has(key)
   }
 
   function toggleGroup(key: string) {
-    setExpandedGroups((prev) => {
+    setCollapsedGroups((prev) => {
       const next = new Set(prev)
       if (next.has(key)) next.delete(key)
       else next.add(key)
@@ -163,7 +163,7 @@ export function DashboardPage() {
     <div className="min-h-svh flex flex-col bg-background">
       {/* Sticky header */}
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur border-b border-zinc-800 px-4 py-3">
-        <div className="flex items-center justify-between max-w-2xl mx-auto">
+        <div className="flex items-center justify-between max-w-screen-2xl mx-auto px-2">
           <div className="flex items-center gap-2 min-w-0">
             <Server className="h-5 w-5 text-blue-500 shrink-0" />
             <span className="font-semibold shrink-0">ServerDeck</span>
@@ -186,6 +186,14 @@ export function DashboardPage() {
             >
               <RefreshCw className="h-4 w-4" />
             </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9"
+              onClick={() => navigate('/terminal')}
+            >
+              Terminal
+            </Button>
             <Button variant="outline" size="sm" className="h-9" onClick={handleLogout}>
               Log out
             </Button>
@@ -200,7 +208,7 @@ export function DashboardPage() {
 
       {/* Main content */}
       <main className="flex-1 overflow-auto px-4 py-4">
-        <div className="max-w-2xl mx-auto space-y-3">
+        <div className="max-w-screen-2xl mx-auto space-y-3">
 
           {/* Loading skeletons */}
           {isLoading &&
@@ -256,7 +264,7 @@ export function DashboardPage() {
             const someRunning = runningCount > 0
 
             return (
-              <div key={group.key}>
+              <div key={group.key} className="border border-zinc-700 rounded-xl p-3">
                 {showGroupHeaders && isStandalone && (
                   <div className="flex items-center gap-2 pt-2 pb-1">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -297,7 +305,7 @@ export function DashboardPage() {
                   </button>
                 )}
                 {expanded && (
-                  <div className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                     {group.containers.map((container) => (
                       <ContainerCard
                         key={container.id}
