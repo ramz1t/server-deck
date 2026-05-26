@@ -15,21 +15,26 @@ function getSession(request: FastifyRequest): SessionData {
   return session
 }
 
-// Module-level env var validation — fail fast at startup (D-P5-15)
+// Read SSH env vars — validated lazily inside the route handler so missing vars
+// don't crash the whole server (Docker dashboard still works without SSH configured)
 const SSH_USERNAME = process.env.SSH_USERNAME
 const SSH_KEY_PATH = process.env.SSH_KEY_PATH
-
-if (!SSH_USERNAME || !SSH_KEY_PATH) {
-  throw new Error('SSH_USERNAME and SSH_KEY_PATH must be set in environment')
-}
-
-const SSH_PRIVATE_KEY: Buffer = readFileSync(SSH_KEY_PATH)
+const SSH_PRIVATE_KEY: Buffer | null = SSH_KEY_PATH ? (() => {
+  try { return readFileSync(SSH_KEY_PATH) } catch { return null }
+})() : null
 
 export const terminalRoute: FastifyPluginAsync = async (fastify) => {
   fastify.get(
     '/api/terminal',
     { websocket: true, preHandler: [verifyAuth] },
     (socket: WebSocket, _req) => {
+      // Fail at connection time with a clear message rather than crashing the server
+      if (!SSH_USERNAME || !SSH_PRIVATE_KEY) {
+        socket.send('SSH_USERNAME and SSH_KEY_PATH are not configured on the server.\r\n')
+        socket.close(1011, 'SSH not configured')
+        return
+      }
+
       const conn = new Client()
       let stream: ClientChannel | null = null
 
@@ -107,8 +112,8 @@ export const terminalRoute: FastifyPluginAsync = async (fastify) => {
       conn.connect({
         host: 'localhost',
         port: 22,
-        username: SSH_USERNAME,
-        privateKey: SSH_PRIVATE_KEY,
+        username: SSH_USERNAME!,
+        privateKey: SSH_PRIVATE_KEY!,
         readyTimeout: 10_000,
         keepaliveInterval: 0,
       })
