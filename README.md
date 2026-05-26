@@ -51,10 +51,6 @@ Edit `packages/server/.env`:
 PORT=3001
 JWT_SECRET=          # generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 LOG_LEVEL=info
-
-# SSH Terminal — key-based auth for the PTY terminal
-SSH_USERNAME=        # your Linux username on this server (e.g. ubuntu, timur)
-SSH_KEY_PATH=        # path to a private key that can SSH to localhost (e.g. /home/ubuntu/.ssh/id_ed25519)
 ```
 
 **Generate a strong JWT secret:**
@@ -62,42 +58,7 @@ SSH_KEY_PATH=        # path to a private key that can SSH to localhost (e.g. /ho
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-### 3. Set up SSH key auth for the terminal
-
-The SSH terminal connects to `localhost:22` using a private key (not your login password). You need a key that is authorised to SSH into the same machine the app runs on.
-
-**Option A — use an existing key** (if you already have `~/.ssh/id_ed25519`):
-
-```bash
-# Authorise the key to connect to localhost
-cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys
-chmod 600 ~/.ssh/authorized_keys
-
-# Test it works
-ssh -i ~/.ssh/id_ed25519 $(whoami)@localhost echo "ok"
-```
-
-Set in `.env`:
-```env
-SSH_USERNAME=<your-username>
-SSH_KEY_PATH=/home/<your-username>/.ssh/id_ed25519
-```
-
-**Option B — create a dedicated key:**
-
-```bash
-ssh-keygen -t ed25519 -f ~/.ssh/serverdeck -N "" -C "serverdeck-terminal"
-cat ~/.ssh/serverdeck.pub >> ~/.ssh/authorized_keys
-chmod 600 ~/.ssh/authorized_keys
-```
-
-Set in `.env`:
-```env
-SSH_USERNAME=<your-username>
-SSH_KEY_PATH=/home/<your-username>/.ssh/serverdeck
-```
-
-> **Note:** The Docker dashboard login uses your SSH password (entered in the browser). The terminal uses this key. The two auth paths are independent.
+That's it — no additional SSH key setup needed. The terminal reuses the same SSH password you log in with.
 
 ---
 
@@ -171,18 +132,6 @@ sudo usermod -aG docker $USER
 | `PORT` | No (default: 3001) | Port the server listens on |
 | `JWT_SECRET` | **Yes** | Secret for signing session cookies — must be long and random |
 | `LOG_LEVEL` | No (default: info) | Fastify log level: `trace`, `debug`, `info`, `warn`, `error` |
-| `SSH_USERNAME` | Yes (for terminal) | Linux username for key-based SSH to localhost |
-| `SSH_KEY_PATH` | Yes (for terminal) | Absolute path to the private key file (no passphrase, or see below) |
-
-> If `SSH_USERNAME` or `SSH_KEY_PATH` are missing, the rest of the app (Docker dashboard, logs) still works — only the SSH terminal will show an error.
-
-### Key with a passphrase
-
-If your private key has a passphrase, set:
-```env
-SSH_KEY_PASSPHRASE=your-passphrase
-```
-And update `packages/server/src/routes/terminal.ts` to pass `passphrase: process.env.SSH_KEY_PASSPHRASE` in the `conn.connect()` call.
 
 ---
 
