@@ -27,7 +27,7 @@ const XTERM_OPTIONS: ITerminalOptions = {
   cursorStyle: 'block',
   cursorBlink: true,
   scrollback: 1000,
-  allowTransparency: false,
+  allowTransparency: true,
   convertEol: true,
 }
 
