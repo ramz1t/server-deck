@@ -65,6 +65,7 @@ export function TerminalPage() {
           style={{
             background: '#09090b',
             overflow: 'hidden',
+            paddingBottom: 4,  // FitAddon subtracts padding — prevents bottom rows being clipped
           }}
           data-gramm="false"
           autoCorrect="off"
