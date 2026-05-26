@@ -8,20 +8,29 @@ ServerDeck is a mobile-friendly personal server dashboard that gives you a real-
 
 From any phone browser, see what's running on your server and drop into a shell — no apps, no VPN setup, no switching tools.
 
+## Current Milestone: v1.1 Complete the Vision
+
+**Goal:** Ship the full original product vision — an interactive SSH terminal and a production-ready mobile experience.
+
+**Target features:**
+- SSH Terminal — PTY-backed shell accessible from any phone browser via WebSocket
+- Mobile Polish + PWA — 390px-optimised layout, iOS keyboard handling, installable via home screen
+
 ## Requirements
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] User can log in with username and password (Phase 1 — Auth Foundation)
+- [x] User can see a list of all Docker containers with live status (Phase 2 — Container Dashboard)
+- [x] User can start, stop, and restart any container (Phase 2 — Container Dashboard)
+- [x] Container list updates live without a page reload (Phase 3 — Real-Time Status)
+- [x] User can view live logs for any container (Phase 4 — Log Streaming)
 
 ### Active
 
-- [ ] User can log in with username and password
-- [ ] User can see a list of all Docker containers with live status (running/stopped/exited)
-- [ ] User can start, stop, and restart any container
-- [ ] User can view live logs for any container
-- [ ] User can open a web-based SSH terminal to the server
-- [ ] The UI is mobile-first and usable on a phone screen
+- [ ] User can open a web-based SSH terminal to the server (Phase 5)
+- [ ] The UI is mobile-first and production-ready on a phone screen (Phase 6)
+- [ ] App is installable as a PWA (Phase 6)
 - [ ] Session persists across browser refresh
 
 ### Out of Scope
@@ -51,11 +60,14 @@ From any phone browser, see what's running on your server and drop into a shell 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Username + password auth | Simplest approach for single-user personal tool; works great on mobile | — Pending |
-| Web app (not native mobile) | No app store, instant access from any phone browser | — Pending |
-| Node.js backend | Natural fit for SSH (ssh2 library) and Docker (dockerode), single runtime | — Pending |
-| React frontend (mobile-first) | Tailwind CSS for responsive design, xterm.js for terminal | — Pending |
-| App runs on the server | Reduces latency, Docker socket access is local | — Pending |
+| Username + password auth | Simplest approach for single-user personal tool; works great on mobile | ✅ Shipped Phase 1 |
+| Web app (not native mobile) | No app store, instant access from any phone browser | ✅ Shipped Phase 1 |
+| Node.js backend | Natural fit for SSH (ssh2 library) and Docker (dockerode), single runtime | ✅ Shipped Phase 1 |
+| React frontend (mobile-first) | Tailwind CSS for responsive design, xterm.js for terminal | ✅ Shipped Phase 1 |
+| App runs on the server | Reduces latency, Docker socket access is local | ✅ Shipped Phase 1 |
+| @fastify/websocket for WS | Auth hooks run before upgrade, solving the critical WS auth gap | ✅ Shipped Phase 3 |
+| ssh2 for SSH (no node-pty) | Pure-JS, survives Node upgrades inside Docker | ✅ Decided Phase 1 |
+| @xterm/xterm for terminal | PTY rendering, fit addon for resize, attach addon for WS | In use Phase 5 |
 
 ## Evolution
 
@@ -75,4 +87,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 after initialization*
+*Last updated: 2026-05-26 — Milestone v1.1 started (phases 1–4 shipped)*

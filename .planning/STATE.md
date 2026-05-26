@@ -1,15 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: in_progress
-last_updated: "2026-05-25T13:10:00Z"
+milestone: v1.1
+milestone_name: Complete the Vision
+status: planning
+last_updated: "2026-05-26T09:06:14.710Z"
+last_activity: 2026-05-26
 progress:
-  total_phases: 6
-  completed_phases: 2
-  total_plans: 5
-  completed_plans: 6
-  percent: 33
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # ServerDeck — Project State
@@ -22,21 +23,10 @@ progress:
 
 ## Current Position
 
-| Field | Value |
-|-------|-------|
-| **Phase** | 2 — Container Dashboard |
-| **Plan** | 02 — Container dashboard UI ✅ |
-| **Status** | Phase 2 complete — all plans done |
-| **Milestone** | v1 |
-
-**Progress:**
-
-[████░░░░░░] 33%
-[████████████████████░░░░░░░░░░] 33% — Phase 2 complete (2 of 2 plans done)
-
-```
-
----
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-26 — Milestone v1.1 started
 
 ## Phase Summary
 
