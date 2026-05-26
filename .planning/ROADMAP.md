@@ -114,8 +114,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01-PLAN-backend-terminal.md — Backend WS route /api/terminal: ssh2 PTY proxy, verifyAuth, env var validation, stream.destroy() teardown
-- [ ] 05-02-PLAN-frontend-terminal.md — xterm.js packages, useTerminalSession hook, TouchToolbar component, TerminalPage, App.tsx route, DashboardPage Terminal button
+- [x] 05-01-PLAN-backend-terminal.md — Backend WS route /api/terminal: ssh2 PTY proxy, verifyAuth, env var validation, stream.destroy() teardown
+- [x] 05-02-PLAN-frontend-terminal.md — xterm.js packages, useTerminalSession hook, TouchToolbar component, TerminalPage, App.tsx route, DashboardPage Terminal button
 **UI hint**: yes
 
 ---
