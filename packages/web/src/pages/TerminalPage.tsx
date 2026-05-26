@@ -21,9 +21,9 @@ export function TerminalPage() {
   const badge = STATUS_BADGE[status]
 
   return (
-    <div className="min-h-dvh flex flex-col bg-[#09090b]">
+    <div className="h-dvh flex flex-col bg-[#09090b] overflow-hidden">
       {/* Header (D-P5-04) */}
-      <header className="sticky top-0 z-10 bg-[#09090b]/80 backdrop-blur border-b border-zinc-800 px-4 py-3 flex items-center gap-3">
+      <header className="shrink-0 bg-[#09090b]/80 backdrop-blur border-b border-zinc-800 px-4 py-3 flex items-center gap-3">
         {/* Back button */}
         <Button
           variant="ghost"
@@ -58,18 +58,12 @@ export function TerminalPage() {
       </header>
 
       {/* Terminal area */}
-      <main className="flex-1 relative overflow-hidden">
-        {/*
-         * Terminal mount point — ALWAYS rendered so xterm is in the DOM.
-         * FitAddon needs measured dimensions; opacity hides it during connect.
-         * D-P5-26: mobile autocorrect/spellcheck suppressed via data attributes.
-         */}
+      <main className="flex-1 relative overflow-hidden min-h-0">
         <div
           ref={containerRef}
-          className={`w-full touch-none ${status === 'connecting' ? 'opacity-0' : 'opacity-100'}`}
+          className={`w-full h-full touch-none ${status === 'connecting' ? 'opacity-0' : 'opacity-100'}`}
           style={{
-            height: 'calc(100dvh - var(--terminal-header-height) - var(--toolbar-height))',
-            background: '#09090b',   // D-P5-07 — zinc-950 prevents color flash during resize
+            background: '#09090b',
             overflow: 'hidden',
           }}
           data-gramm="false"
@@ -126,6 +120,8 @@ export function TerminalPage() {
 
       {/* Touch toolbar — always visible (D-P5-13) */}
       <TouchToolbar sendKey={sendKey} />
+      {/* Safe area spacer for iOS home indicator */}
+      <div className="shrink-0 bg-zinc-900" style={{ height: 'env(safe-area-inset-bottom)' }} />
     </div>
   )
 }

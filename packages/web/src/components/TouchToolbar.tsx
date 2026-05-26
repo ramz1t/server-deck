@@ -50,8 +50,7 @@ export function TouchToolbar({ sendKey, className }: TouchToolbarProps) {
   return (
     <div
       className={[
-        'fixed bottom-0 left-0 right-0 h-[44px] pb-[env(safe-area-inset-bottom)]',
-        'bg-zinc-900 border-t border-zinc-800 z-20 flex items-center overflow-x-auto',
+        'shrink-0 h-[44px] bg-zinc-900 border-t border-zinc-800 z-20 flex items-center overflow-x-auto',
         className ?? '',
       ]
         .filter(Boolean)
