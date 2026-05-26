@@ -17,26 +17,26 @@ progress:
 
 **Project:** ServerDeck  
 **Core Value:** From any phone browser, see what's running on your server and drop into a shell — no apps, no VPN setup, no switching tools.  
-**Last Updated:** 2026-05-25
+**Last Updated:** 2026-05-26
 
 ---
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 6 — Mobile Polish + Hardening (next)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-26 — Milestone v1.1 started
+Status: Phase 5 complete; Phase 6 ready to plan
+Last activity: 2026-05-26 — Phase 5 SSH Terminal executed and verified
 
 ## Phase Summary
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | Auth Foundation | **Planned** (3 plans ready) |
-| 2 | Container Dashboard | **Complete** (2/2 plans done) |
-| 3 | Real-Time Container Status | Not started |
-| 4 | Log Streaming | Not started |
-| 5 | SSH Terminal | Not started |
+| 1 | Auth Foundation | **Complete** (shipped v1.0) |
+| 2 | Container Dashboard | **Complete** (shipped v1.0) |
+| 3 | Real-Time Container Status | **Complete** (shipped v1.0) |
+| 4 | Log Streaming | **Complete** (shipped v1.0) |
+| 5 | SSH Terminal | **Complete** (2/2 plans done — 2026-05-26) |
 | 6 | Mobile Polish + Hardening | Not started |
 
 ---

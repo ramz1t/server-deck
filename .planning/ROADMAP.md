@@ -144,7 +144,7 @@ Plans:
 | 2. Container Dashboard | 2/2 | ✅ Done | 2026-05-26 |
 | 3. Real-Time Container Status | 2/2 | ✅ Done | 2026-05-26 |
 | 4. Log Streaming | 2/2 | ✅ Done | 2026-05-26 |
-| 5. SSH Terminal | 0/? | Not started | - |
+| 5. SSH Terminal | 2/2 | ✅ Done | 2026-05-26 |
 | 6. Mobile Polish + Hardening | 0/? | Not started | - |
 
 ---
