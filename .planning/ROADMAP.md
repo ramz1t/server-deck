@@ -111,7 +111,11 @@ Plans:
   3. Resizing the browser window or triggering the iOS software keyboard causes the terminal to reflow correctly within 200 ms
   4. The touch toolbar above the terminal provides tappable Ctrl, Tab, Esc, and arrow key buttons that send the correct escape sequences
   5. Closing the terminal tab / navigating away terminates the SSH session on the server — no zombie processes accumulate
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 05-01-PLAN-backend-terminal.md — Backend WS route /api/terminal: ssh2 PTY proxy, verifyAuth, env var validation, stream.destroy() teardown
+- [ ] 05-02-PLAN-frontend-terminal.md — xterm.js packages, useTerminalSession hook, TouchToolbar component, TerminalPage, App.tsx route, DashboardPage Terminal button
 **UI hint**: yes
 
 ---
