@@ -56,3 +56,9 @@ body {
   color: hsl(var(--foreground));
   font-family: system-ui, sans-serif;
 }
+
+/* FitAddon reads padding from .xterm element to compute available rows.
+   A small bottom padding prevents the last row being clipped at the container edge. */
+.terminal-container .xterm {
+  padding-bottom: 6px;
+}

@@ -61,11 +61,10 @@ export function TerminalPage() {
       <main className="flex-1 relative overflow-hidden min-h-0">
         <div
           ref={containerRef}
-          className={`w-full h-full touch-none ${status === 'connecting' ? 'opacity-0' : 'opacity-100'}`}
+          className={`terminal-container w-full h-full touch-none ${status === 'connecting' ? 'opacity-0' : 'opacity-100'}`}
           style={{
             background: '#09090b',
             overflow: 'hidden',
-            paddingBottom: 4,  // FitAddon subtracts padding — prevents bottom rows being clipped
           }}
           data-gramm="false"
           autoCorrect="off"
