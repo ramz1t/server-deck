@@ -1,11 +1,12 @@
 # Requirements: ServerDeck
 
-**Defined:** 2026-05-25
+**Defined:** 2026-05-25  
+**Updated:** 2026-05-26 — v1.1 milestone  
 **Core Value:** From any phone browser, see what's running on your server and drop into a shell — no apps, no VPN setup, no switching tools.
 
-## v1 Requirements
+## v1.0 Requirements (Shipped — Phases 1–4)
 
-### Authentication
+### Authentication ✅
 
 - [x] **AUTH-01**: User can log in with username and password via a login form
 - [x] **AUTH-02**: User receives a secure httpOnly JWT cookie upon successful login
@@ -14,21 +15,23 @@
 - [x] **AUTH-05**: Login endpoint is rate-limited to prevent brute-force attacks
 - [x] **AUTH-06**: All API routes (REST and WebSocket) reject unauthenticated requests
 
-### Container Dashboard
+### Container Dashboard ✅
 
-- [ ] **CONT-01**: User can see a list of all Docker containers (running and stopped)
-- [ ] **CONT-02**: Each container shows name, image, status, and uptime
-- [ ] **CONT-03**: Container list updates in real time when containers start, stop, or change state
-- [ ] **CONT-04**: User can start a stopped container
-- [ ] **CONT-05**: User can stop a running container
-- [ ] **CONT-06**: User can restart a running container
+- [x] **CONT-01**: User can see a list of all Docker containers (running and stopped)
+- [x] **CONT-02**: Each container shows name, image, status, and uptime
+- [x] **CONT-03**: Container list updates in real time when containers start, stop, or change state
+- [x] **CONT-04**: User can start a stopped container
+- [x] **CONT-05**: User can stop a running container
+- [x] **CONT-06**: User can restart a running container
 
-### Log Streaming
+### Log Streaming ✅
 
-- [ ] **LOGS-01**: User can open a live log view for any container
-- [ ] **LOGS-02**: Logs stream in real time via WebSocket
-- [ ] **LOGS-03**: Last N lines of existing logs are shown immediately on open (tail)
-- [ ] **LOGS-04**: Log stream is cleanly terminated when user closes the log view
+- [x] **LOGS-01**: User can open a live log view for any container
+- [x] **LOGS-02**: Logs stream in real time via WebSocket
+- [x] **LOGS-03**: Last N lines of existing logs are shown immediately on open (tail)
+- [x] **LOGS-04**: Log stream is cleanly terminated when user closes the log view
+
+## v1.1 Requirements (Active — Phases 5–6)
 
 ### SSH Terminal
 
@@ -39,7 +42,7 @@
 - [ ] **SSH-05**: A touch-friendly toolbar provides tappable keys for Ctrl, Tab, Esc, and arrow keys
 - [ ] **SSH-06**: SSH session is cleanly terminated when user closes the terminal
 
-### Mobile UX
+### Mobile UX + PWA
 
 - [ ] **MOBL-01**: All screens are usable on a 390px-wide phone screen (iPhone 15 baseline)
 - [ ] **MOBL-02**: Terminal viewport adjusts correctly when the iOS virtual keyboard appears
