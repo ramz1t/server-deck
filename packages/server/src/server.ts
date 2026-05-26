@@ -5,6 +5,7 @@ import { authRoutes } from './routes/auth.js'
 import { containerRoutes } from './routes/containers.js'
 import { containerEventsRoute } from './routes/container-events.js'
 import { containerLogsRoute } from './routes/container-logs.js'
+import { terminalRoute } from './routes/terminal.js'
 import { verifyAuth } from './middleware/verify-auth.js'
 
 export async function buildServer() {
@@ -39,6 +40,7 @@ export async function buildServer() {
   await fastify.register(containerRoutes)
   await fastify.register(containerEventsRoute)
   await fastify.register(containerLogsRoute)
+  await fastify.register(terminalRoute)
 
   fastify.get('/health', async () => ({ ok: true }))
 
