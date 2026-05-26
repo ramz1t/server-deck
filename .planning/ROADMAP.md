@@ -131,7 +131,7 @@ Plans:
   3. All interactive elements (buttons, container rows, toolbar keys) have a minimum 44 × 44 px tap target — verified with browser DevTools
   4. The terminal input area has `autocorrect="off"` and `autocapitalize="off"` — iOS does not auto-correct shell commands
   5. Visiting the app in mobile Safari shows an "Add to Home Screen" prompt (PWA manifest present with valid icons and `start_url`)
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
 
 ---
