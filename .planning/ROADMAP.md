@@ -1,20 +1,22 @@
 # ServerDeck — Roadmap
 
 **Project:** ServerDeck  
-**Milestone:** v1  
+**Milestone:** v1.1 — Complete the Vision  
 **Granularity:** Standard  
 **Mode:** MVP (each phase delivers an end-to-end user-facing capability)  
-**Coverage:** 27/27 v1 requirements mapped ✓  
-**Created:** 2026-05-25
+**Coverage (v1.0):** 16/16 requirements mapped ✓ (shipped — Phases 1–4)  
+**Coverage (v1.1):** 11/11 requirements mapped ✓ (active — Phases 5–6)  
+**Created:** 2026-05-25  
+**v1.1 started:** 2026-05-26
 
 ---
 
 ## Phases
 
-- [x] **Phase 1: Auth Foundation** — Users can securely log in, maintain sessions, and log out; all routes are protected
-- [x] **Phase 2: Container Dashboard** — Users can see every Docker container and start, stop, or restart them
-- [x] **Phase 3: Real-Time Container Status** — Container list updates live without a page reload
-- [x] **Phase 4: Log Streaming** — Users can watch live container logs stream in the browser
+- [x] **Phase 1: Auth Foundation** — Users can securely log in, maintain sessions, and log out; all routes are protected *(shipped v1.0)*
+- [x] **Phase 2: Container Dashboard** — Users can see every Docker container and start, stop, or restart them *(shipped v1.0)*
+- [x] **Phase 3: Real-Time Container Status** — Container list updates live without a page reload *(shipped v1.0)*
+- [x] **Phase 4: Log Streaming** — Users can watch live container logs stream in the browser *(shipped v1.0)*
 - [ ] **Phase 5: SSH Terminal** — Users can open a full PTY-backed SSH terminal from a phone browser
 - [ ] **Phase 6: Mobile Polish + Hardening** — The entire app is production-ready on a phone; PWA installable
 
@@ -134,10 +136,10 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Auth Foundation | 0/? | Not started | - |
-| 2. Container Dashboard | 0/? | Not started | - |
-| 3. Real-Time Container Status | 0/? | Not started | - |
-| 4. Log Streaming | 0/? | Not started | - |
+| 1. Auth Foundation | 3/3 | ✅ Done | 2026-05-26 |
+| 2. Container Dashboard | 2/2 | ✅ Done | 2026-05-26 |
+| 3. Real-Time Container Status | 2/2 | ✅ Done | 2026-05-26 |
+| 4. Log Streaming | 2/2 | ✅ Done | 2026-05-26 |
 | 5. SSH Terminal | 0/? | Not started | - |
 | 6. Mobile Polish + Hardening | 0/? | Not started | - |
 
@@ -175,8 +177,9 @@ Plans:
 | MOBL-04 | Phase 6 |
 | MOBL-05 | Phase 6 |
 
-**Total mapped: 27/27 ✓**
+**Total mapped: 27/27 ✓** (16 shipped in v1.0 + 11 active in v1.1)
 
 ---
 *Roadmap created: 2026-05-25*  
-*Next: `/gsd-plan-phase 1`*
+*v1.1 milestone started: 2026-05-26 — Phases 1–4 shipped*  
+*Next: `/gsd-plan-phase 5`*
