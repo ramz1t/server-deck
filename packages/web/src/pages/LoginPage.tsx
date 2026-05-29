@@ -9,9 +9,7 @@ import { Server, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
 
 export function LoginPage() {
   const navigate = useNavigate()
-  const [host, setHost] = useState(() => localStorage.getItem('sd_host') ?? '')
-  const [port, setPort] = useState(() => localStorage.getItem('sd_port') ?? '22')
-  const [username, setUsername] = useState(() => localStorage.getItem('sd_username') ?? '')
+  const [serverHost, setServerHost] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -23,28 +21,26 @@ export function LoginPage() {
       .catch(() => {})
   }, [navigate])
 
+  useEffect(() => {
+    api.get<{ host: string }>('/config')
+      .then(({ data }) => setServerHost(data.host ?? ''))
+      .catch(() => {})
+  }, [])
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
 
     try {
-      await api.post('/auth/login', { host, port: Number(port), username, password })
-      // Only persist convenience values after successful login (IN-02: don't overwrite correct values on failure)
-      localStorage.setItem('sd_host', host)
-      localStorage.setItem('sd_port', port)
-      localStorage.setItem('sd_username', username)
+      await api.post('/auth/login', { password })
       navigate('/')
     } catch (err: unknown) {
       const status = (err as { response?: { status?: number } }).response?.status
       if (status === 401) {
-        setError('Invalid credentials. Check your username and password.')
+        setError('Invalid credentials. Check your password.')
       } else if (status === 429) {
         setError('Too many attempts. Wait a minute and try again.')
-      } else if (status === 504) {
-        setError('Connection timed out. Verify host and port are reachable.')
-      } else if (status === 502) {
-        setError('Host unreachable. Check the host address and port.')
       } else {
         setError('An unexpected error occurred. Please try again.')
       }
@@ -59,62 +55,15 @@ export function LoginPage() {
         <CardHeader className="space-y-1 pb-4">
           <div className="flex items-center gap-2">
             <Server size={20} className="text-primary" />
-            <CardTitle className="text-2xl font-bold">ServerDeck</CardTitle>
+            <CardTitle className="text-2xl font-bold">
+              {serverHost ? `${serverHost} ServerDeck` : 'ServerDeck'}
+            </CardTitle>
           </div>
-          <CardDescription>Connect to your server</CardDescription>
+          <CardDescription>Enter your password to connect</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="host">Host</Label>
-                <Input
-                  id="host"
-                  type="text"
-                  className="text-base"
-                  placeholder="192.168.1.100"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  autoComplete="url"
-                  disabled={isLoading}
-                  value={host}
-                  onChange={(e) => setHost(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="port">Port</Label>
-                <Input
-                  id="port"
-                  type="text"
-                  className="text-base"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  autoComplete="off"
-                  disabled={isLoading}
-                  value={port}
-                  onChange={(e) => setPort(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  type="text"
-                  className="text-base"
-                  placeholder="ubuntu"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  autoComplete="username"
-                  disabled={isLoading}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-
               <div className="space-y-1.5">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">

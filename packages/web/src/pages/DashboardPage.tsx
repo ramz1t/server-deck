@@ -14,6 +14,8 @@ import { Button } from "../components/ui/button";
 import { Skeleton } from "../components/ui/skeleton";
 import { useContainerEvents } from "../hooks/useContainerEvents";
 import { PWAInstallBanner } from "../components/PWAInstallBanner";
+import { StatsPanel } from "../components/StatsPanel";
+import { DomainHealthWidget } from "../components/DomainHealthWidget";
 
 interface ContainerInfo {
   id: string;
@@ -281,6 +283,12 @@ export function DashboardPage() {
       {/* Main content */}
       <main className="flex-1 overflow-auto px-4 py-4">
         <div className="max-w-screen-2xl mx-auto space-y-3">
+          {/* Server stats */}
+          <StatsPanel />
+
+          {/* Domain health */}
+          <DomainHealthWidget />
+
           {/* Loading skeletons */}
           {isLoading &&
             Array.from({ length: 3 }).map((_, i) => (
