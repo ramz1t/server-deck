@@ -1,9 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { LoginPage } from './pages/LoginPage'
-import { DashboardPage } from './pages/DashboardPage'
+import { ContainersPage } from './pages/ContainersPage'
+import { StatsPage } from './pages/StatsPage'
 import { LogPage } from './pages/LogPage'
 import { TerminalPage } from './pages/TerminalPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { AppLayout } from './components/AppLayout'
 
 function App() {
   return (
@@ -11,7 +13,11 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<ProtectedRoute />}>
-          <Route index element={<DashboardPage />} />
+          <Route element={<AppLayout />}>
+            <Route index element={<Navigate to="/containers" replace />} />
+            <Route path="containers" element={<ContainersPage />} />
+            <Route path="stats" element={<StatsPage />} />
+          </Route>
           <Route path="logs/:containerId" element={<LogPage />} />
           <Route path="terminal" element={<TerminalPage />} />
         </Route>

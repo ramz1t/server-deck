@@ -12,8 +12,12 @@ export const MONITORED_DOMAINS = [
   "https://timur.aboard.ru/casinoapp/admin",
   "https://timur.aboard.ru/grocket",
   "https://timur.aboard.ru/grocket/api",
+  "https://timur.aboard.ru/credit-helper",
+  "https://timur.aboard.ru/credit-helper/api",
   "https://ramz1.vercel.app",
-  // Add your domains here, e.g.:
-  // 'http://192.168.1.50:8080',
-  // 'https://grafana.homelab.local',
+  "https://martynov.onrender.com",
+  "https://simon-kuleshov.onrender.com",
+  "https://viktorpavlenko.vercel.app",
+  "https://event-planner-ramz1.vercel.app",
+  "https://hkr-fullstack-lab-backend.vercel.app",
 ] as const;
