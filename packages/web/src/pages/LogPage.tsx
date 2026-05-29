@@ -23,6 +23,12 @@ export function LogPage() {
   const autoScrollRef = useRef(true)
   const [showResume, setShowResume] = useState(false)
 
+  // Scroll to bottom on initial mount
+  useEffect(() => {
+    const el = scrollRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [])
+
   // Auto-scroll to bottom when new lines arrive (only when auto-scroll is enabled)
   useEffect(() => {
     if (!autoScrollRef.current) return
