@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Server, RefreshCw, AlertCircle, Layers, ChevronRight } from 'lucide-react'
+import { Server, RefreshCw, AlertCircle, Layers, ChevronRight, TerminalSquare, LogOut } from 'lucide-react'
 import { api } from '../lib/axios'
 import { ContainerCard } from '../components/ContainerCard'
 import { Button } from '../components/ui/button'
@@ -173,7 +173,7 @@ export function DashboardPage() {
             </span>
           </div>
           {!wsConnected && hasConnectedOnce && (
-            <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded-full shrink-0">
+            <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-0.5 shrink-0">
               reconnecting…
             </span>
           )}
@@ -181,7 +181,7 @@ export function DashboardPage() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-11 w-11"
+              className="h-11 w-11 rounded-none"
               onClick={() => refetch()}
               aria-label="Refresh"
             >
@@ -189,14 +189,21 @@ export function DashboardPage() {
             </Button>
             <Button
               variant="outline"
-              size="sm"
-              className="h-11"
+              size="icon"
+              className="h-11 w-11 rounded-none"
               onClick={() => navigate('/terminal')}
+              aria-label="Terminal"
             >
-              Terminal
+              <TerminalSquare className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="sm" className="h-11" onClick={handleLogout}>
-              Log out
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-11 w-11 rounded-none border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-400"
+              onClick={handleLogout}
+              aria-label="Log out"
+            >
+              <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -217,7 +224,7 @@ export function DashboardPage() {
           {/* Loading skeletons */}
           {isLoading &&
             Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="rounded-lg border border-zinc-800 p-4 space-y-3">
+              <div key={i} className="border border-zinc-800 p-4 space-y-3">
                 <div className="flex justify-between">
                   <Skeleton className="h-5 w-32" />
                   <Skeleton className="h-5 w-16" />
@@ -232,7 +239,7 @@ export function DashboardPage() {
 
           {/* Error state */}
           {isError && (
-            <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 flex flex-col items-center gap-3 text-center">
+            <div className="border border-red-500/30 bg-red-500/10 p-4 flex flex-col items-center gap-3 text-center">
               <AlertCircle className="h-8 w-8 text-red-400" />
               <div>
                 <p className="font-semibold text-red-400">Failed to load containers</p>
@@ -249,7 +256,7 @@ export function DashboardPage() {
 
           {/* Empty state */}
           {!isLoading && !isError && containers && containers.length === 0 && (
-            <div className="rounded-lg border border-zinc-800 p-8 flex flex-col items-center gap-2 text-center">
+            <div className="border border-zinc-800 p-8 flex flex-col items-center gap-2 text-center">
               <Server className="h-10 w-10 text-muted-foreground/50" />
               <p className="font-semibold">No containers</p>
               <p className="text-sm text-muted-foreground">
@@ -268,7 +275,7 @@ export function DashboardPage() {
             const someRunning = runningCount > 0
 
             return (
-              <div key={group.key} className="border border-zinc-700 rounded-xl p-3">
+              <div key={group.key} className="bg-zinc-900 rounded-none p-3">
                 {showGroupHeaders && isStandalone && (
                   <div className="flex items-center gap-2 pt-2 pb-1">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">

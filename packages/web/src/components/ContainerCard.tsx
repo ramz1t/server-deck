@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader2 } from 'lucide-react'
+import { Loader2, ScrollText, RotateCw, Square, Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
@@ -37,22 +37,22 @@ function StateBadge({ state }: { state: string }) {
   switch (state) {
     case 'running':
       className =
-        'bg-green-500/15 text-green-400 border border-green-500/30 text-xs px-2 py-0.5 rounded-full'
+        'bg-green-500/15 text-green-400 border border-green-500/30 text-xs px-2 py-0.5 rounded-none'
       break
     case 'exited':
     case 'dead':
       className =
-        'bg-zinc-500/15 text-zinc-400 border border-zinc-500/30 text-xs px-2 py-0.5 rounded-full'
+        'bg-zinc-500/15 text-zinc-400 border border-zinc-500/30 text-xs px-2 py-0.5 rounded-none'
       break
     case 'paused':
       className =
-        'bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 text-xs px-2 py-0.5 rounded-full'
+        'bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 text-xs px-2 py-0.5 rounded-none'
       break
     case 'created':
     case 'restarting':
     default:
       className =
-        'bg-blue-500/15 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-full'
+        'bg-blue-500/15 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-none'
   }
   return <span className={className}>{state}</span>
 }
@@ -68,7 +68,7 @@ export function ContainerCard({
   const containerName = container.names[0] ?? container.shortId
 
   return (
-    <div className="rounded-lg border border-zinc-800 bg-card p-4 space-y-3">
+    <div className="rounded-none bg-zinc-800 p-4 space-y-3">
       {/* Header: name + badge */}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
@@ -83,31 +83,34 @@ export function ContainerCard({
       {/* Human-readable status */}
       <p className="text-xs text-muted-foreground">{container.status}</p>
 
-      {/* Action buttons */}
+      {/* Action buttons — icon only */}
       <div className="flex justify-end gap-2">
-        {/* Logs — always visible regardless of container state (D-P4-01) */}
+        {/* Logs — always visible */}
         <Button
           variant="ghost"
-          size="sm"
-          className="min-h-[44px] h-11"
+          size="icon"
+          className="h-11 w-11 rounded-none"
           onClick={() => onLogs(container.id)}
+          aria-label="View logs"
         >
-          Logs
+          <ScrollText className="h-4 w-4" />
         </Button>
         {container.state === 'running' && (
           <>
             {/* Restart */}
             <Button
               variant="outline"
-              size="sm"
-              className="min-h-[44px] h-11"
+              size="icon"
+              className="h-11 w-11 rounded-none"
               disabled={isActing}
               onClick={() => onRestart(container.id)}
+              aria-label="Restart"
             >
               {isActing ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
-              ) : null}
-              Restart
+              ) : (
+                <RotateCw className="h-4 w-4" />
+              )}
             </Button>
 
             {/* Stop — guarded by AlertDialog */}
@@ -115,11 +118,12 @@ export function ContainerCard({
               <AlertDialogTrigger asChild>
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="min-h-[44px] h-11 border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-400"
+                  size="icon"
+                  className="h-11 w-11 rounded-none border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-400"
                   disabled={isActing}
+                  aria-label="Stop"
                 >
-                  Stop
+                  <Square className="h-4 w-4" />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -147,27 +151,29 @@ export function ContainerCard({
         {container.state === 'restarting' && (
           <Button
             variant="outline"
-            size="sm"
-            className="min-h-[44px] h-11"
+            size="icon"
+            className="h-11 w-11 rounded-none"
             disabled
+            aria-label="Restarting"
           >
             <Loader2 className="h-4 w-4 animate-spin" />
-            Restarting...
           </Button>
         )}
 
         {['exited', 'dead', 'created', 'paused'].includes(container.state) && (
           <Button
             variant="outline"
-            size="sm"
-            className="min-h-[44px] h-11"
+            size="icon"
+            className="h-11 w-11 rounded-none"
             disabled={isActing}
             onClick={() => onStart(container.id)}
+            aria-label="Start"
           >
             {isActing ? (
               <Loader2 className="h-4 w-4 animate-spin" />
-            ) : null}
-            Start
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
           </Button>
         )}
       </div>
