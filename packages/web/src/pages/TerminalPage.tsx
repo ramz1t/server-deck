@@ -28,7 +28,7 @@ export function TerminalPage() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 shrink-0"
+          className="h-11 w-11 shrink-0"
           onClick={() => navigate(-1)}
           aria-label="Back to dashboard"
         >
@@ -49,7 +49,7 @@ export function TerminalPage() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 shrink-0"
+          className="h-11 w-11 shrink-0"
           onClick={() => navigate(-1)}
           aria-label="Close terminal"
         >

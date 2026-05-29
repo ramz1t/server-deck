@@ -180,7 +180,7 @@ export function DashboardPage() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9"
+              className="h-11 w-11"
               onClick={() => refetch()}
               aria-label="Refresh"
             >
@@ -189,12 +189,12 @@ export function DashboardPage() {
             <Button
               variant="outline"
               size="sm"
-              className="h-9"
+              className="h-11"
               onClick={() => navigate('/terminal')}
             >
               Terminal
             </Button>
-            <Button variant="outline" size="sm" className="h-9" onClick={handleLogout}>
+            <Button variant="outline" size="sm" className="h-11" onClick={handleLogout}>
               Log out
             </Button>
           </div>
@@ -277,7 +277,7 @@ export function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => toggleGroup(group.key)}
-                    className="w-full flex items-center gap-2 pt-2 pb-1 text-left group"
+                    className="w-full flex items-center gap-2 pt-2 pb-1 text-left group min-h-[44px]"
                     aria-expanded={expanded}
                   >
                     <Layers className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
