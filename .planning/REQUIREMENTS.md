@@ -1,7 +1,7 @@
 # Requirements: ServerDeck
 
 **Defined:** 2026-05-25  
-**Updated:** 2026-05-26 — v1.1 milestone  
+**Updated:** 2026-05-29 — v1.2 milestone started  
 **Core Value:** From any phone browser, see what's running on your server and drop into a shell — no apps, no VPN setup, no switching tools.
 
 ## v1.0 Requirements (Shipped — Phases 1–4)
@@ -31,16 +31,18 @@
 - [x] **LOGS-03**: Last N lines of existing logs are shown immediately on open (tail)
 - [x] **LOGS-04**: Log stream is cleanly terminated when user closes the log view
 
-## v1.1 Requirements (Active — Phases 5–6)
+## v1.1 Requirements (Shipped — Phase 5)
 
-### SSH Terminal
+### SSH Terminal ✅
 
-- [ ] **SSH-01**: User can open a web-based SSH terminal to the server
-- [ ] **SSH-02**: Terminal connects to localhost via SSH using a pre-configured server key
-- [ ] **SSH-03**: Terminal input and output are streamed over WebSocket
-- [ ] **SSH-04**: Terminal resizes correctly when the browser window or keyboard changes size
-- [ ] **SSH-05**: A touch-friendly toolbar provides tappable keys for Ctrl, Tab, Esc, and arrow keys
-- [ ] **SSH-06**: SSH session is cleanly terminated when user closes the terminal
+- [x] **SSH-01**: User can open a web-based SSH terminal to the server
+- [x] **SSH-02**: Terminal connects to the server via SSH using session credentials (password auth)
+- [x] **SSH-03**: Terminal input and output are streamed over WebSocket
+- [x] **SSH-04**: Terminal resizes correctly when the browser window or keyboard changes size
+- [x] **SSH-05**: A touch-friendly toolbar provides tappable keys for Ctrl, Tab, Esc, and arrow keys
+- [x] **SSH-06**: SSH session is cleanly terminated when user closes the terminal
+
+## v1.2 Requirements (Active — Phase 6)
 
 ### Mobile UX + PWA
 
@@ -89,41 +91,42 @@
 
 ## Traceability
 
-Which phases cover which requirements. Confirmed during roadmap creation (2026-05-25).
+Which phases cover which requirements. Updated 2026-05-29.
 
 | Requirement | Phase | Phase Name | Status |
 |-------------|-------|------------|--------|
-| AUTH-01 | Phase 1 | Auth Foundation | Pending |
-| AUTH-02 | Phase 1 | Auth Foundation | Pending |
-| AUTH-03 | Phase 1 | Auth Foundation | Pending |
-| AUTH-04 | Phase 1 | Auth Foundation | Pending |
-| AUTH-05 | Phase 1 | Auth Foundation | Pending |
-| AUTH-06 | Phase 1 | Auth Foundation | Pending |
-| CONT-01 | Phase 2 | Container Dashboard | Pending |
-| CONT-02 | Phase 2 | Container Dashboard | Pending |
-| CONT-03 | Phase 3 | Real-Time Container Status | Pending |
-| CONT-04 | Phase 2 | Container Dashboard | Pending |
-| CONT-05 | Phase 2 | Container Dashboard | Pending |
-| CONT-06 | Phase 2 | Container Dashboard | Pending |
-| LOGS-01 | Phase 4 | Log Streaming | Pending |
-| LOGS-02 | Phase 4 | Log Streaming | Pending |
-| LOGS-03 | Phase 4 | Log Streaming | Pending |
-| LOGS-04 | Phase 4 | Log Streaming | Pending |
-| SSH-01 | Phase 5 | SSH Terminal | Pending |
-| SSH-02 | Phase 5 | SSH Terminal | Pending |
-| SSH-03 | Phase 5 | SSH Terminal | Pending |
-| SSH-04 | Phase 5 | SSH Terminal | Pending |
-| SSH-05 | Phase 5 | SSH Terminal | Pending |
-| SSH-06 | Phase 5 | SSH Terminal | Pending |
-| MOBL-01 | Phase 6 | Mobile Polish + Hardening | Pending |
-| MOBL-02 | Phase 6 | Mobile Polish + Hardening | Pending |
-| MOBL-03 | Phase 6 | Mobile Polish + Hardening | Pending |
-| MOBL-04 | Phase 6 | Mobile Polish + Hardening | Pending |
-| MOBL-05 | Phase 6 | Mobile Polish + Hardening | Pending |
+| AUTH-01 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| AUTH-02 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| AUTH-03 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| AUTH-04 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| AUTH-05 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| AUTH-06 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| CONT-01 | Phase 2 | Container Dashboard | ✅ Shipped v1.0 |
+| CONT-02 | Phase 2 | Container Dashboard | ✅ Shipped v1.0 |
+| CONT-03 | Phase 3 | Real-Time Container Status | ✅ Shipped v1.0 |
+| CONT-04 | Phase 2 | Container Dashboard | ✅ Shipped v1.0 |
+| CONT-05 | Phase 2 | Container Dashboard | ✅ Shipped v1.0 |
+| CONT-06 | Phase 2 | Container Dashboard | ✅ Shipped v1.0 |
+| LOGS-01 | Phase 4 | Log Streaming | ✅ Shipped v1.0 |
+| LOGS-02 | Phase 4 | Log Streaming | ✅ Shipped v1.0 |
+| LOGS-03 | Phase 4 | Log Streaming | ✅ Shipped v1.0 |
+| LOGS-04 | Phase 4 | Log Streaming | ✅ Shipped v1.0 |
+| SSH-01 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| SSH-02 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| SSH-03 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| SSH-04 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| SSH-05 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| SSH-06 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| MOBL-01 | Phase 6 | Mobile Polish & PWA | Pending |
+| MOBL-02 | Phase 6 | Mobile Polish & PWA | Pending |
+| MOBL-03 | Phase 6 | Mobile Polish & PWA | Pending |
+| MOBL-04 | Phase 6 | Mobile Polish & PWA | Pending |
+| MOBL-05 | Phase 6 | Mobile Polish & PWA | Pending |
 
 **Coverage:**
-- v1 requirements: 27 total
-- Mapped to phases: 27
+- v1.0 requirements: 16 total — all shipped ✓
+- v1.1 requirements: 6 total — all shipped ✓
+- v1.2 requirements: 5 total — Phase 6 pending
 - Unmapped: 0 ✓
 
 ---
