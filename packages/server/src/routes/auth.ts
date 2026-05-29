@@ -4,10 +4,8 @@ import { validateSshCredentials } from '../services/ssh-auth.js'
 import { setSession, getSession, deleteSession } from '../services/session-store.js'
 
 type LoginBody = {
-  host: string
-  port: number
-  username: string
   password: string
+  // host/port/username removed — read from process.env (CONF-01)
 }
 
 export async function authRoutes(fastify: FastifyInstance): Promise<void> {
@@ -20,18 +18,18 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
       schema: {
         body: {
           type: 'object',
-          required: ['host', 'port', 'username', 'password'],
+          required: ['password'],
           properties: {
-            host: { type: 'string', minLength: 1 },
-            port: { type: 'integer', minimum: 1, maximum: 65535 },
-            username: { type: 'string', minLength: 1 },
             password: { type: 'string', minLength: 1 },
           },
         },
       },
     },
     async (request: FastifyRequest<{ Body: LoginBody }>, reply: FastifyReply) => {
-      const { host, port, username, password } = request.body
+      const { password } = request.body
+      const host = process.env.SSH_HOST!
+      const port = Number(process.env.SSH_PORT ?? 22)
+      const username = process.env.SSH_USERNAME!
 
       const result = await validateSshCredentials(host, port, username, password)
 
@@ -62,6 +60,11 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
       return reply.send({ ok: true })
     }
   )
+
+  // GET /api/config — public (no auth); returns SSH_HOST for the login page heading (CONF-02)
+  fastify.get('/api/config', async () => ({
+    host: process.env.SSH_HOST ?? '',
+  }))
 
   fastify.post('/api/auth/logout', async (request: FastifyRequest, reply: FastifyReply) => {
     try {

@@ -1,7 +1,7 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
 import { getSession } from '../services/session-store.js'
 
-const EXCLUDED_PATHS = ['/api/auth/login', '/api/auth/logout', '/health']
+const EXCLUDED_PATHS = ['/api/auth/login', '/api/auth/logout', '/api/config', '/health']
 
 export async function verifyAuth(
   request: FastifyRequest,
