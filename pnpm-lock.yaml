@@ -118,6 +118,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.0.0
         version: 6.0.2(vite@8.0.14(@types/node@20.19.41)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.48.0)(tsx@4.22.3))
+      baseline-browser-mapping:
+        specifier: ^2.10.32
+        version: 2.10.32
       tailwindcss:
         specifier: ^4.3.0
         version: 4.3.0
