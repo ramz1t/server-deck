@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { Loader2, ScrollText, RotateCw, Square, Play } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import * as React from "react";
+import { Loader2, ScrollText, RotateCw, Square, Play, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,50 +11,51 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+} from "@/components/ui/alert-dialog";
 
 interface ContainerInfo {
-  id: string
-  shortId: string
-  names: string[]
-  image: string
-  status: string
-  state: string
-  createdAt: string
+  id: string;
+  shortId: string;
+  names: string[];
+  image: string;
+  status: string;
+  state: string;
+  createdAt: string;
 }
 
 interface ContainerCardProps {
-  container: ContainerInfo
-  onStart: (id: string) => void
-  onStop: (id: string) => void
-  onRestart: (id: string) => void
-  onLogs: (id: string) => void
+  container: ContainerInfo;
+  onStart: (id: string) => void;
+  onStop: (id: string) => void;
+  onRestart: (id: string) => void;
+  onLogs: (id: string) => void;
+  onDelete: (id: string) => void
   isActing: boolean
 }
 
 function StateBadge({ state }: { state: string }) {
-  let className = ''
+  let className = "";
   switch (state) {
-    case 'running':
+    case "running":
       className =
-        'bg-green-500/15 text-green-400 border border-green-500/30 text-xs px-2 py-0.5 rounded-none'
-      break
-    case 'exited':
-    case 'dead':
+        "bg-green-500/15 text-green-400 border border-green-500/30 text-xs px-2 py-0.5 rounded-none";
+      break;
+    case "exited":
+    case "dead":
       className =
-        'bg-zinc-500/15 text-zinc-400 border border-zinc-500/30 text-xs px-2 py-0.5 rounded-none'
-      break
-    case 'paused':
+        "bg-zinc-500/15 text-zinc-400 border border-zinc-500/30 text-xs px-2 py-0.5 rounded-none";
+      break;
+    case "paused":
       className =
-        'bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 text-xs px-2 py-0.5 rounded-none'
-      break
-    case 'created':
-    case 'restarting':
+        "bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 text-xs px-2 py-0.5 rounded-none";
+      break;
+    case "created":
+    case "restarting":
     default:
       className =
-        'bg-blue-500/15 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-none'
+        "bg-blue-500/15 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-none";
   }
-  return <span className={className}>{state}</span>
+  return <span className={className}>{state}</span>;
 }
 
 export function ContainerCard({
@@ -63,9 +64,10 @@ export function ContainerCard({
   onStop,
   onRestart,
   onLogs,
+  onDelete,
   isActing,
 }: ContainerCardProps) {
-  const containerName = container.names[0] ?? container.shortId
+  const containerName = container.names[0] ?? container.shortId;
 
   return (
     <div className="rounded-none bg-zinc-800 p-4 space-y-3">
@@ -84,7 +86,7 @@ export function ContainerCard({
       <p className="text-xs text-muted-foreground">{container.status}</p>
 
       {/* Action buttons — icon only */}
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-end">
         {/* Logs — always visible */}
         <Button
           variant="outline"
@@ -95,7 +97,7 @@ export function ContainerCard({
         >
           <ScrollText className="h-4 w-4" />
         </Button>
-        {container.state === 'running' && (
+        {container.state === "running" && (
           <>
             {/* Restart */}
             <Button
@@ -148,7 +150,7 @@ export function ContainerCard({
           </>
         )}
 
-        {container.state === 'restarting' && (
+        {container.state === "restarting" && (
           <Button
             variant="outline"
             size="icon"
@@ -160,23 +162,57 @@ export function ContainerCard({
           </Button>
         )}
 
-        {['exited', 'dead', 'created', 'paused'].includes(container.state) && (
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-11 w-11 rounded-none border-0 bg-zinc-800 hover:bg-zinc-700"
-            disabled={isActing}
-            onClick={() => onStart(container.id)}
-            aria-label="Start"
-          >
-            {isActing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Play className="h-4 w-4" />
-            )}
-          </Button>
+        {["exited", "dead", "created", "paused"].includes(container.state) && (
+          <>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-11 w-11 rounded-none border-0 bg-zinc-800 hover:bg-zinc-700"
+              disabled={isActing}
+              onClick={() => onStart(container.id)}
+              aria-label="Start"
+            >
+              {isActing ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
+            </Button>
+
+            {/* Delete — guarded by AlertDialog */}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-11 w-11 rounded-none border-0 bg-zinc-800 text-red-400 hover:bg-zinc-700 hover:text-red-400"
+                  disabled={isActing}
+                  aria-label="Delete"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete container?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete {containerName}. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    onClick={() => onDelete(container.id)}
+                  >
+                    Delete container
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
         )}
       </div>
     </div>
-  )
+  );
 }

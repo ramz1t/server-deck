@@ -99,3 +99,8 @@ export async function restartContainer(session: SessionData, id: string): Promis
   if (!isValidContainerId(id)) throw new Error(`Invalid container ID: ${id}`)
   await sshExec(session, `docker restart ${id}`)
 }
+
+export async function deleteContainer(session: SessionData, id: string): Promise<void> {
+  if (!isValidContainerId(id)) throw new Error(`Invalid container ID: ${id}`)
+  await sshExec(session, `docker rm ${id}`)
+}

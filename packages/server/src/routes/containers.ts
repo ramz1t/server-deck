@@ -4,6 +4,7 @@ import {
   startContainer,
   stopContainer,
   restartContainer,
+  deleteContainer,
   isValidContainerId,
 } from '../services/docker-ssh.js'
 import type { SessionData } from '../types/session.js'
@@ -52,4 +53,22 @@ export async function containerRoutes(fastify: FastifyInstance): Promise<void> {
       }
     )
   }
+
+  fastify.delete<{ Params: ActionParams }>(
+    '/api/containers/:id',
+    async (request: FastifyRequest<{ Params: ActionParams }>, reply: FastifyReply) => {
+      const { id } = request.params
+      if (!isValidContainerId(id)) {
+        return reply.status(400).send({ error: 'Invalid container ID' })
+      }
+      const session = getSession(request)
+      try {
+        await deleteContainer(session, id)
+        return { ok: true }
+      } catch (err) {
+        fastify.log.error(err, `Failed to delete container ${id}`)
+        return reply.status(502).send({ error: 'Failed to delete container' })
+      }
+    }
+  )
 }

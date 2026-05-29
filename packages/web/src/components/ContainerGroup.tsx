@@ -22,6 +22,7 @@ interface ContainerGroupProps {
   onStop: (id: string) => void;
   onRestart: (id: string) => void;
   onLogs: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 export function ContainerGroup({
@@ -34,6 +35,7 @@ export function ContainerGroup({
   onStop,
   onRestart,
   onLogs,
+  onDelete,
 }: ContainerGroupProps) {
   const isStandalone = groupKey === "__standalone__";
   const [expanded, setExpanded] = useState(true);
@@ -60,7 +62,7 @@ export function ContainerGroup({
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="w-full flex items-center gap-2 pt-2 pb-1 text-left group min-h-[44px]"
+          className="w-full flex items-center gap-2 py-2 text-left group min-h-[44px]"
           aria-expanded={expanded}
         >
           <Layers className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
@@ -90,8 +92,8 @@ export function ContainerGroup({
 
       {/* Animated container grid */}
       <div
-        className={`grid transition-all duration-300 ease-in-out pt-3 ${
-          expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        className={`grid transition-all duration-300 ease-in-out ${
+          expanded ? "grid-rows-[1fr] pt-2" : "grid-rows-[0fr] pt-0"
         }`}
       >
         <div className="overflow-hidden">
@@ -105,6 +107,7 @@ export function ContainerGroup({
                 onStop={onStop}
                 onRestart={onRestart}
                 onLogs={onLogs}
+                onDelete={onDelete}
               />
             ))}
           </div>
