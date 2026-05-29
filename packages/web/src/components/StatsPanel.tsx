@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { HardDrive, MemoryStick, Clock, FolderOpen } from 'lucide-react'
+import { HardDrive, MemoryStick, Clock } from 'lucide-react'
 import { api } from '../lib/axios'
 import { Skeleton } from './ui/skeleton'
 
@@ -73,19 +73,15 @@ export function StatsPanel() {
         label="Disk (/)"
         value={`${formatBytes(data.disk.used)} / ${formatBytes(data.disk.total)} (${data.disk.usePercent}%)`}
       />
+      {data.mntSdbDisk && (
+        <StatRow
+          icon={<HardDrive className="h-4 w-4 text-muted-foreground shrink-0" />}
+          label="Disk (/mnt/sdb)"
+          value={`${formatBytes(data.mntSdbDisk.used)} / ${formatBytes(data.mntSdbDisk.total)} (${data.mntSdbDisk.usePercent}%)`}
+        />
+      )}
       {data.mntSdb && data.mntSdb.length > 0 && (
         <div className="px-4 py-3 bg-zinc-900">
-          <div className="flex items-center justify-between gap-3 mb-2">
-            <div className="flex items-center gap-3">
-              <FolderOpen className="h-4 w-4 text-muted-foreground shrink-0" />
-              <p className="text-xs text-muted-foreground">/mnt/sdb</p>
-            </div>
-            {data.mntSdbDisk && (
-              <span className="text-xs text-muted-foreground shrink-0">
-                {formatBytes(data.mntSdbDisk.used)} / {formatBytes(data.mntSdbDisk.total)} ({data.mntSdbDisk.usePercent}%)
-              </span>
-            )}
-          </div>
           <div className="space-y-1 pl-7">
             {data.mntSdb.map((entry) => (
               <div key={entry.name} className="flex items-center gap-2">
