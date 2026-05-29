@@ -52,13 +52,21 @@
 - [x] **MOBL-04**: Autocorrect and autocapitalize are disabled in the terminal input
 - [x] **MOBL-05**: App is installable as a PWA (manifest + service worker stub for offline shell)
 
-## v2 Requirements (Phase 7 — Docker Compose Deployment)
+## v2 Requirements (Phase 7 — Personal Config & Server Stats)
 
-### Deployment
+### Configuration
 
-- [ ] **DEPLOY-01**: The entire app (server + frontend) starts with a single `docker-compose up` command
-- [ ] **DEPLOY-02**: `VITE_API_BASE` env var controls the axios base URL — empty/unset means same-origin (prod), a full URL (e.g. `http://localhost:3000`) means proxied dev mode
-- [ ] **DEPLOY-03**: `VITE_BASE` env var controls the Vite `base` path — defaults to `/` so the app works at root or any sub-path
+- [ ] **CONF-01**: SSH host, port, and username are read from server `.env` (`SSH_HOST`, `SSH_PORT`, `SSH_USERNAME`); they are never entered by the user
+- [ ] **CONF-02**: Login page shows `{SSH_HOST} ServerDeck` as the heading and only a password input field
+- [ ] **CONF-03**: `VITE_API_BASE` build-time env var sets the axios base origin for cross-origin deployments (empty = same-origin `/api`)
+
+### Server Stats
+
+- [ ] **STATS-01**: Dashboard shows disk usage (used / available / %) for the root filesystem
+- [ ] **STATS-02**: Dashboard shows RAM usage (used / total / %)
+- [ ] **STATS-03**: Dashboard shows server uptime in human-readable form
+- [ ] **STATS-04**: Dashboard shows the top-level directory listing of `/mnt/sdb` (name + size)
+- [ ] **STATS-05**: Dashboard shows a hardcoded list of domains with a live up/down health badge (HTTP HEAD check)
 
 ---
 
@@ -132,9 +140,14 @@ Which phases cover which requirements. Updated 2026-05-29.
 | MOBL-03 | Phase 6 | Mobile Polish & PWA | Pending |
 | MOBL-04 | Phase 6 | Mobile Polish & PWA | Pending |
 | MOBL-05 | Phase 6 | Mobile Polish & PWA | Pending |
-| DEPLOY-01 | Phase 7 | Docker Compose Deployment | Pending |
-| DEPLOY-02 | Phase 7 | Docker Compose Deployment | Pending |
-| DEPLOY-03 | Phase 7 | Docker Compose Deployment | Pending |
+| CONF-01 | Phase 7 | Personal Config & Server Stats | Pending |
+| CONF-02 | Phase 7 | Personal Config & Server Stats | Pending |
+| CONF-03 | Phase 7 | Personal Config & Server Stats | Pending |
+| STATS-01 | Phase 7 | Personal Config & Server Stats | Pending |
+| STATS-02 | Phase 7 | Personal Config & Server Stats | Pending |
+| STATS-03 | Phase 7 | Personal Config & Server Stats | Pending |
+| STATS-04 | Phase 7 | Personal Config & Server Stats | Pending |
+| STATS-05 | Phase 7 | Personal Config & Server Stats | Pending |
 
 **Coverage:**
 - v1.0 requirements: 16 total — all shipped ✓
