@@ -41,9 +41,13 @@ async function containerAction(
 
 /**
  * Group containers by Docker Compose project prefix.
- * Docker Compose v2 names: {project}-{service}-{replica}
- * e.g. "proj1-web-1", "proj1-db-1" → group "proj1"
- * Containers that don't match the pattern are treated as standalone.
+ *
+ * Handles two naming conventions:
+ *   v2 (hyphen):    {project}-{service}-{replica}  e.g. "proj-web-1"
+ *   v1 (underscore): {project}_{service} or {project}_{service}-{replica}
+ *
+ * After initial grouping, sub-project groups are merged into their parent.
+ * e.g. "hkr-fullstack-web" merges into "hkr-fullstack" when both exist.
  */
 function groupContainersByProject(containers: ContainerInfo[]): ContainerGroup[] {
   const namedGroups = new Map<string, ContainerInfo[]>()
@@ -51,13 +55,41 @@ function groupContainersByProject(containers: ContainerInfo[]): ContainerGroup[]
 
   for (const c of containers) {
     const name = c.names[0] ?? c.shortId
-    const match = name.match(/^(.+)-[^-]+-\d+$/)
-    if (match) {
-      const key = match[1]
+
+    // v2: {project}-{service}-{replica}
+    const v2Match = name.match(/^(.+)-[^-]+-\d+$/)
+    if (v2Match) {
+      const key = v2Match[1]
       if (!namedGroups.has(key)) namedGroups.set(key, [])
       namedGroups.get(key)!.push(c)
-    } else {
-      standalone.push(c)
+      continue
+    }
+
+    // v1: {project}_{service} or {project}_{service}-{replica}
+    const underscoreIdx = name.indexOf('_')
+    if (underscoreIdx > 0) {
+      const key = name.slice(0, underscoreIdx)
+      if (!namedGroups.has(key)) namedGroups.set(key, [])
+      namedGroups.get(key)!.push(c)
+      continue
+    }
+
+    standalone.push(c)
+  }
+
+  // Merge sub-project groups into their parent.
+  // e.g. "hkr-fullstack-web" → "hkr-fullstack" when both keys exist.
+  const keys = [...namedGroups.keys()]
+  for (const key of keys) {
+    if (!namedGroups.has(key)) continue // already merged
+    const parent = keys
+      .filter((k) => k !== key && key.startsWith(k + '-'))
+      .sort((a, b) => b.length - a.length)[0] // longest matching parent wins
+    if (parent && namedGroups.has(parent)) {
+      for (const c of namedGroups.get(key)!) {
+        namedGroups.get(parent)!.push(c)
+      }
+      namedGroups.delete(key)
     }
   }
 
