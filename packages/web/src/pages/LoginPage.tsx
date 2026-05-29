@@ -66,15 +66,15 @@ export function LoginPage() {
         <CardHeader className="space-y-1 pb-4">
           <div className="flex items-center gap-2">
             <Server size={20} className="text-primary" />
-            <CardTitle className="text-2xl font-bold">ServerDeck</CardTitle>
+            <CardTitle className="text-2xl font-bold">
+              Ramz1 ServerDeck
+            </CardTitle>
           </div>
-          <CardDescription>Enter your password to connect</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -83,6 +83,7 @@ export function LoginPage() {
                     autoComplete="current-password"
                     disabled={isLoading}
                     value={password}
+                    placeholder="Password"
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <Button

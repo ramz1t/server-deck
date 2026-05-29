@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { HardDrive, MemoryStick, Clock, Container, Trash2 } from 'lucide-react'
+import { HardDrive, MemoryStick, Container, Trash2 } from 'lucide-react'
 import { api } from '../lib/axios'
 import { Skeleton } from './ui/skeleton'
 import { Button } from './ui/button'
@@ -73,28 +73,25 @@ export function StatsPanel() {
 
   return (
     <div className="border border-zinc-800 divide-y divide-zinc-800">
-      <StatRow
-        icon={<Clock className="h-4 w-4 text-muted-foreground shrink-0" />}
-        label="Uptime"
-        value={data.uptime.human}
-      />
-      <StatRow
-        icon={<MemoryStick className="h-4 w-4 text-muted-foreground shrink-0" />}
-        label="RAM"
-        value={`${formatBytes(data.ram.used)} / ${formatBytes(data.ram.total)} (${data.ram.usePercent}%)`}
-      />
-      <StatRow
-        icon={<HardDrive className="h-4 w-4 text-muted-foreground shrink-0" />}
-        label="Disk (/)"
-        value={`${formatBytes(data.disk.used)} / ${formatBytes(data.disk.total)} (${data.disk.usePercent}%)`}
-      />
-      {data.mntSdbDisk && (
+      <div className="grid grid-cols-2 divide-x divide-zinc-800">
+        <StatRow
+          icon={<MemoryStick className="h-4 w-4 text-muted-foreground shrink-0" />}
+          label="RAM"
+          value={`${formatBytes(data.ram.used)} / ${formatBytes(data.ram.total)} (${data.ram.usePercent}%)`}
+        />
         <StatRow
           icon={<HardDrive className="h-4 w-4 text-muted-foreground shrink-0" />}
-          label="Disk (/mnt/sdb)"
-          value={`${formatBytes(data.mntSdbDisk.used)} / ${formatBytes(data.mntSdbDisk.total)} (${data.mntSdbDisk.usePercent}%)`}
+          label="Disk (/)"
+          value={`${formatBytes(data.disk.used)} / ${formatBytes(data.disk.total)} (${data.disk.usePercent}%)`}
         />
-      )}
+        {data.mntSdbDisk && (
+          <StatRow
+            icon={<HardDrive className="h-4 w-4 text-muted-foreground shrink-0" />}
+            label="Disk (/mnt/sdb)"
+            value={`${formatBytes(data.mntSdbDisk.used)} / ${formatBytes(data.mntSdbDisk.total)} (${data.mntSdbDisk.usePercent}%)`}
+          />
+        )}
+      </div>
       {data.mntSdb && data.mntSdb.length > 0 && (
         <div className="px-4 py-3 bg-zinc-900">
           <div className="space-y-1 pl-7">
