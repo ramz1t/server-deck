@@ -1,5 +1,5 @@
 import { useNavigate, useOutletContext, NavLink, Outlet } from 'react-router-dom'
-import { Server, TerminalSquare, LogOut, LayoutGrid, BarChart2 } from 'lucide-react'
+import { Server, TerminalSquare, LogOut, LayoutGrid, BarChart2, Globe } from 'lucide-react'
 import { api } from '../lib/axios'
 import { Button } from './ui/button'
 import { PWAInstallBanner } from './PWAInstallBanner'
@@ -52,6 +52,10 @@ export function AppLayout() {
               <NavLink to="/stats" className={navLinkClass}>
                 <BarChart2 className="h-4 w-4" />
                 <span className="hidden sm:inline">Stats</span>
+              </NavLink>
+              <NavLink to="/domains" className={navLinkClass}>
+                <Globe className="h-4 w-4" />
+                <span className="hidden sm:inline">Domains</span>
               </NavLink>
             </nav>
           </div>

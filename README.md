@@ -1,6 +1,6 @@
 # ServerDeck
 
-> **Note:** This repository is a test playground for [GSD (Get Shit Done)](https://github.com/get-shit-done-cc/get-shit-done) — an AI-driven development workflow. The app itself is real and functional, but the primary purpose of this repo is to exercise GSD's plan/execute/verify cycle.
+> **Note:** This repository is a test playground for [GSD (Get Shit Done)](https://github.com/open-gsd/gsd-core) — an AI-driven development workflow. The app itself is real and functional, but the primary purpose of this repo is to exercise GSD's plan/execute/verify cycle.
 
 A mobile-friendly personal server dashboard for monitoring Docker containers and SSH terminal access — built to look good on your phone.
 
@@ -19,12 +19,14 @@ A mobile-friendly personal server dashboard for monitoring Docker containers and
 ## Requirements
 
 ### On your server
+
 - **Node.js 20+** and **pnpm 9+**
 - **Docker** running (the app connects via SSH and runs `docker` commands)
 - **sshd** listening on port 22 (standard on most Linux servers)
 - A user with permission to run `docker` commands (either root or in the `docker` group)
 
 ### On your local machine (development only)
+
 - Node.js 20+ and pnpm 9+
 
 ---
@@ -56,6 +58,7 @@ LOG_LEVEL=info
 ```
 
 **Generate a strong JWT secret:**
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
@@ -79,11 +82,13 @@ Open [http://localhost:5173](http://localhost:5173) and log in with your server'
 ### Production (on your server)
 
 **Build:**
+
 ```bash
 pnpm build
 ```
 
 **Start:**
+
 ```bash
 # From the repo root
 node packages/server/dist/index.js
@@ -105,12 +110,12 @@ The built frontend (`packages/web/dist/`) is served statically by the Fastify se
 
 Open the app in your browser and enter your **server's SSH credentials**:
 
-| Field | Value |
-|---|---|
-| Host | your server's IP or hostname (e.g. `192.168.1.10`) |
-| Port | SSH port, usually `22` |
-| Username | your Linux username |
-| Password | your Linux password (or SSH password) |
+| Field    | Value                                              |
+| -------- | -------------------------------------------------- |
+| Host     | your server's IP or hostname (e.g. `192.168.1.10`) |
+| Port     | SSH port, usually `22`                             |
+| Username | your Linux username                                |
+| Password | your Linux password (or SSH password)              |
 
 The app validates the credentials by attempting an SSH connection — no separate user database.
 
@@ -129,11 +134,11 @@ sudo usermod -aG docker $USER
 
 ## Environment variables reference
 
-| Variable | Required | Description |
-|---|---|---|
-| `PORT` | No (default: 3001) | Port the server listens on |
-| `JWT_SECRET` | **Yes** | Secret for signing session cookies — must be long and random |
-| `LOG_LEVEL` | No (default: info) | Fastify log level: `trace`, `debug`, `info`, `warn`, `error` |
+| Variable     | Required           | Description                                                  |
+| ------------ | ------------------ | ------------------------------------------------------------ |
+| `PORT`       | No (default: 3001) | Port the server listens on                                   |
+| `JWT_SECRET` | **Yes**            | Secret for signing session cookies — must be long and random |
+| `LOG_LEVEL`  | No (default: info) | Fastify log level: `trace`, `debug`, `info`, `warn`, `error` |
 
 ---
 

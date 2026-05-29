@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { LoginPage } from './pages/LoginPage'
 import { ContainersPage } from './pages/ContainersPage'
 import { StatsPage } from './pages/StatsPage'
+import { DomainsPage } from './pages/DomainsPage'
 import { LogPage } from './pages/LogPage'
 import { TerminalPage } from './pages/TerminalPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -17,6 +18,7 @@ function App() {
             <Route index element={<Navigate to="/containers" replace />} />
             <Route path="containers" element={<ContainersPage />} />
             <Route path="stats" element={<StatsPage />} />
+            <Route path="domains" element={<DomainsPage />} />
           </Route>
           <Route path="logs/:containerId" element={<LogPage />} />
           <Route path="terminal" element={<TerminalPage />} />
