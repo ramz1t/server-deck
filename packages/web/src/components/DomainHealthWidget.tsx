@@ -140,23 +140,23 @@ export function DomainHealthWidget() {
         <div className="px-4 py-3 text-xs text-muted-foreground bg-zinc-900">Checking…</div>
       )}
 
-      {groups.map((group) => (
-        <div key={group.domain} className="bg-zinc-900">
+      {groups.map((group, gi) => (
+        <div key={group.domain} className={gi > 0 ? 'border-t-2 border-zinc-700' : ''}>
           {/* Domain group header */}
-          <div className="px-4 py-1.5 border-b border-zinc-800/60">
-            <span className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider">
+          <div className="px-4 py-2 bg-zinc-800">
+            <span className="text-xs font-bold text-zinc-300 uppercase tracking-widest">
               {group.domain}
             </span>
           </div>
 
-          {group.subGroups.map((sub) => {
+          {group.subGroups.map((sub, si) => {
             const isSingleEntry = sub.entries.length === 1 && sub.entries[0].displayLabel === '/'
             return (
-              <div key={sub.key}>
-                {/* Sub-group header — only show if more than one entry or label is meaningful */}
+              <div key={sub.key} className={si > 0 ? 'border-t border-zinc-700/60' : ''}>
+                {/* Sub-group header */}
                 {!isSingleEntry && (
-                  <div className="px-4 py-1 border-b border-zinc-800/40 flex items-center gap-1.5">
-                    <span className="text-xs text-zinc-400 font-mono">{sub.label}</span>
+                  <div className="px-4 py-1.5 bg-zinc-850 flex items-center gap-1.5" style={{ background: 'color-mix(in srgb, #18181b 60%, #09090b 40%)' }}>
+                    <span className="text-xs text-zinc-400 font-mono font-medium">{sub.label}</span>
                   </div>
                 )}
 
@@ -166,7 +166,7 @@ export function DomainHealthWidget() {
                     href={result.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between px-4 py-2 border-b border-zinc-800/40 last:border-0 hover:bg-zinc-800/50 transition-colors group"
+                    className="flex items-center justify-between px-4 py-2 border-b border-zinc-800/40 last:border-0 hover:bg-zinc-800/50 transition-colors group bg-zinc-900"
                   >
                     <span className="flex items-center gap-1.5 min-w-0">
                       <span className="text-xs font-mono text-zinc-300 truncate">
