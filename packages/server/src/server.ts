@@ -1,5 +1,6 @@
 import Fastify from 'fastify'
 import websocket from '@fastify/websocket'
+import cors from '@fastify/cors'
 import fastifyStatic from '@fastify/static'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -39,6 +40,16 @@ export async function buildServer() {
   )
 
   await fastify.register(websocket)
+
+  // CORS — only needed when frontend is deployed separately (CORS_ORIGIN env var).
+  // In same-origin deployments the header is not sent, so this is a no-op.
+  const allowedOrigin = process.env.CORS_ORIGIN
+  if (allowedOrigin) {
+    await fastify.register(cors, {
+      origin: allowedOrigin.split(',').map((o) => o.trim()),
+      credentials: true,
+    })
+  }
 
   await registerAuthPlugins(fastify)
 
