@@ -19,9 +19,9 @@ function App() {
             <Route path="containers" element={<ContainersPage />} />
             <Route path="stats" element={<StatsPage />} />
             <Route path="domains" element={<DomainsPage />} />
+            <Route path="terminal" element={<TerminalPage />} />
           </Route>
           <Route path="logs/:containerId" element={<LogPage />} />
-          <Route path="terminal" element={<TerminalPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

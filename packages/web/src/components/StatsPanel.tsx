@@ -88,14 +88,12 @@ export function StatsPanel() {
           </div>
           <div className="space-y-1 pl-7">
             {data.mntSdb.map((entry) => (
-              <div key={entry.name} className="flex items-center justify-between gap-4">
-                <span className="text-xs font-mono truncate">{entry.name}</span>
-                <div className="flex items-center gap-3 shrink-0">
-                  {entry.modifiedAt !== null && (
-                    <span className="text-xs text-muted-foreground/60">{formatRelativeTime(entry.modifiedAt)}</span>
-                  )}
-                  <span className="text-xs text-muted-foreground">{entry.human}</span>
-                </div>
+              <div key={entry.name} className="flex items-center gap-2">
+                <span className="text-xs font-mono truncate flex-1">{entry.name}</span>
+                <span className="text-xs text-muted-foreground/60 w-16 text-right shrink-0">
+                  {entry.modifiedAt !== null ? formatRelativeTime(entry.modifiedAt) : ''}
+                </span>
+                <span className="text-xs text-muted-foreground w-16 text-right shrink-0">{entry.human}</span>
               </div>
             ))}
           </div>

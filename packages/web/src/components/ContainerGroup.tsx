@@ -71,7 +71,8 @@ export function ContainerGroup({
           </span>
           <span
             className={[
-              "text-xs font-semibold tabular-nums px-1.5 py-0.5 rounded",
+              expanded ? "opacity-0" : "opacity-100",
+              "text-xs font-semibold tabular-nums px-1.5 py-0.5 transition-all",
               allRunning
                 ? "text-green-400 bg-green-500/10"
                 : someRunning

@@ -1,5 +1,5 @@
 import { useNavigate, useOutletContext, NavLink, Outlet } from 'react-router-dom'
-import { Server, TerminalSquare, LogOut, LayoutGrid, BarChart2, Globe } from 'lucide-react'
+import { Server, LogOut, LayoutGrid, BarChart2, Globe, TerminalSquare } from 'lucide-react'
 import { api } from '../lib/axios'
 import { Button } from './ui/button'
 import { PWAInstallBanner } from './PWAInstallBanner'
@@ -27,23 +27,15 @@ export function AppLayout() {
     }`
 
   return (
-    <div className="min-h-svh flex flex-col bg-background">
+    <div className="h-svh flex flex-col bg-background overflow-hidden">
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur border-b border-zinc-800 px-4">
         <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
-          {/* Logo + nav */}
+          {/* Logo + nav links */}
           <div className="flex items-center gap-0 min-w-0">
             <div className="flex items-center gap-2 pr-4 py-3 shrink-0">
               <Server className="h-5 w-5 text-blue-500 shrink-0" />
-              <div className="grid gap-0.5">
-                <span className="font-semibold leading-none">ServerDeck</span>
-                <span className="text-[9px] text-muted-foreground sm:hidden">
-                  {username}@{host}:{port}
-                </span>
-              </div>
+              <span className="font-semibold leading-none">ServerDeck</span>
             </div>
-            <span className="text-muted-foreground text-sm hidden sm:inline pr-4 shrink-0">
-              {username}@{host}:{port}
-            </span>
             <nav className="flex items-end gap-0">
               <NavLink to="/containers" className={navLinkClass}>
                 <LayoutGrid className="h-4 w-4" />
@@ -57,20 +49,18 @@ export function AppLayout() {
                 <Globe className="h-4 w-4" />
                 <span className="hidden sm:inline">Domains</span>
               </NavLink>
+              <NavLink to="/terminal" className={navLinkClass}>
+                <TerminalSquare className="h-4 w-4" />
+                <span className="hidden sm:inline">Terminal</span>
+              </NavLink>
             </nav>
           </div>
 
-          {/* Actions */}
+          {/* Auth info + logout */}
           <div className="flex items-center gap-2 shrink-0">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-11 w-11 rounded-none"
-              onClick={() => navigate('/terminal')}
-              aria-label="Terminal"
-            >
-              <TerminalSquare className="h-4 w-4" />
-            </Button>
+            <span className="text-xs text-muted-foreground hidden sm:inline pr-1">
+              {username}@{host}:{port}
+            </span>
             <Button
               variant="outline"
               size="icon"

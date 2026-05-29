@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Server, RefreshCw, AlertCircle } from 'lucide-react'
+import { Server, AlertCircle, RefreshCw } from 'lucide-react'
 import { api } from '../lib/axios'
 import { ContainerGroup } from '../components/ContainerGroup'
 import { Button } from '../components/ui/button'
@@ -183,25 +183,12 @@ export function ContainersPage() {
   return (
     <main className="flex-1 overflow-auto px-4 py-4">
       <div className="max-w-screen-2xl mx-auto space-y-3">
-        {/* Toolbar: ws reconnect status + refresh */}
-        <div className="flex items-center justify-between min-h-[28px]">
-          {!wsConnected && hasConnectedOnce ? (
-            <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-0.5">
-              reconnecting…
-            </span>
-          ) : (
-            <span />
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-none"
-            onClick={() => refetch()}
-            aria-label="Refresh containers"
-          >
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-        </div>
+        {/* WS reconnect indicator */}
+        {!wsConnected && hasConnectedOnce && (
+          <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-0.5 inline-block">
+            reconnecting…
+          </span>
+        )}
 
         {/* Loading skeletons */}
         {isLoading &&
