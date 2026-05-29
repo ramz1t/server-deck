@@ -315,21 +315,23 @@ export function DashboardPage() {
                     />
                   </button>
                 )}
-                {expanded && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                    {group.containers.map((container) => (
-                      <ContainerCard
-                        key={container.id}
-                        container={container}
-                        isActing={actingContainers.has(container.id)}
-                        onStart={(id) => handleAction(id, 'start')}
-                        onStop={(id) => handleAction(id, 'stop')}
-                        onRestart={(id) => handleAction(id, 'restart')}
-                        onLogs={handleLogs}
-                      />
-                    ))}
+                <div className={`grid transition-all duration-300 ease-in-out ${expanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+                  <div className="overflow-hidden">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pt-1">
+                      {group.containers.map((container) => (
+                        <ContainerCard
+                          key={container.id}
+                          container={container}
+                          isActing={actingContainers.has(container.id)}
+                          onStart={(id) => handleAction(id, 'start')}
+                          onStop={(id) => handleAction(id, 'stop')}
+                          onRestart={(id) => handleAction(id, 'restart')}
+                          onLogs={handleLogs}
+                        />
+                      ))}
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             )
           })}
