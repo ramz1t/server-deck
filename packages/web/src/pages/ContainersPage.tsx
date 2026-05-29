@@ -114,7 +114,7 @@ export function ContainersPage() {
   const navigate = useNavigate()
   useOutletContext<AppContext>() // ensures page is only rendered inside AppLayout
   const queryClient = useQueryClient()
-  const { wsConnected, hasConnectedOnce } = useContainerEvents(queryClient)
+  useContainerEvents(queryClient)
   const [actingContainers, setActingContainers] = useState<Set<string>>(new Set())
 
   const {
@@ -126,7 +126,7 @@ export function ContainersPage() {
   } = useQuery<ContainerInfo[]>({
     queryKey: ['containers'],
     queryFn: fetchContainers,
-    refetchInterval: wsConnected ? false : 5000,
+    refetchInterval: false,
   })
 
   const mutation = useMutation({
@@ -183,12 +183,7 @@ export function ContainersPage() {
   return (
     <main className="flex-1 overflow-auto px-4 py-4">
       <div className="max-w-screen-2xl mx-auto space-y-3">
-        {/* WS reconnect indicator */}
-        {!wsConnected && hasConnectedOnce && (
-          <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-0.5 inline-block">
-            reconnecting…
-          </span>
-        )}
+        {/* No reconnect indicator — refreshes on actions and navigation only */}
 
         {/* Loading skeletons */}
         {isLoading &&
