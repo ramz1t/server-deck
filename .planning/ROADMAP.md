@@ -1,13 +1,15 @@
 # ServerDeck — Roadmap
 
 **Project:** ServerDeck  
-**Milestone:** v1.1 — Complete the Vision  
+**Milestone:** v1.2 — Mobile Polish & PWA  
 **Granularity:** Standard  
 **Mode:** MVP (each phase delivers an end-to-end user-facing capability)  
 **Coverage (v1.0):** 16/16 requirements mapped ✓ (shipped — Phases 1–4)  
-**Coverage (v1.1):** 11/11 requirements mapped ✓ (active — Phases 5–6)  
+**Coverage (v1.1):** 6/6 requirements mapped ✓ (shipped — Phase 5)  
+**Coverage (v1.2):** 5/5 requirements mapped ✓ (active — Phase 6)  
 **Created:** 2026-05-25  
-**v1.1 started:** 2026-05-26
+**v1.1 started:** 2026-05-26  
+**v1.2 started:** 2026-05-29
 
 ---
 
@@ -17,8 +19,8 @@
 - [x] **Phase 2: Container Dashboard** — Users can see every Docker container and start, stop, or restart them *(shipped v1.0)*
 - [x] **Phase 3: Real-Time Container Status** — Container list updates live without a page reload *(shipped v1.0)*
 - [x] **Phase 4: Log Streaming** — Users can watch live container logs stream in the browser *(shipped v1.0)*
-- [ ] **Phase 5: SSH Terminal** — Users can open a full PTY-backed SSH terminal from a phone browser
-- [ ] **Phase 6: Mobile Polish + Hardening** — The entire app is production-ready on a phone; PWA installable
+- [x] **Phase 5: SSH Terminal** — Users can open a full PTY-backed SSH terminal from a phone browser
+- [ ] **Phase 6: Mobile Polish & PWA** — The app is fully usable on a 390px phone and installable as a PWA
 
 ---
 
@@ -120,18 +122,18 @@ Plans:
 
 ---
 
-### Phase 6: Mobile Polish + Hardening
-**Goal**: The full app is production-quality on a 390 px phone screen and installable as a PWA
+### Phase 6: Mobile Polish & PWA
+**Goal**: The app is fully usable on a 390px phone screen and installable as a PWA
 **Mode:** mvp
 **Depends on**: Phase 5
 **Requirements**: MOBL-01, MOBL-02, MOBL-03, MOBL-04, MOBL-05
 **Success Criteria** (what must be TRUE):
-  1. Every screen (login, dashboard, log view, terminal) is fully usable on a 390 px-wide display — no horizontal scroll, no clipped content
+  1. User installs the app to the iOS home screen and it opens as a standalone PWA — no browser chrome, valid manifest with icons and `start_url`
   2. Opening the iOS software keyboard in the terminal does not shrink or obscure the xterm.js viewport — `dvh` units + debounced resize keep it correct
   3. All interactive elements (buttons, container rows, toolbar keys) have a minimum 44 × 44 px tap target — verified with browser DevTools
   4. The terminal input area has `autocorrect="off"` and `autocapitalize="off"` — iOS does not auto-correct shell commands
-  5. Visiting the app in mobile Safari shows an "Add to Home Screen" prompt (PWA manifest present with valid icons and `start_url`)
-**Plans**: 2 plans
+  5. Every screen (login, dashboard, log view, terminal) is fully usable on a 390px-wide display — no horizontal scroll, no clipped content
+**Plans**: TBD
 **UI hint**: yes
 
 ---
@@ -145,45 +147,46 @@ Plans:
 | 3. Real-Time Container Status | 2/2 | ✅ Done | 2026-05-26 |
 | 4. Log Streaming | 2/2 | ✅ Done | 2026-05-26 |
 | 5. SSH Terminal | 2/2 | ✅ Done | 2026-05-26 |
-| 6. Mobile Polish + Hardening | 0/? | Not started | - |
+| 6. Mobile Polish & PWA | 0/? | Not started | - |
 
 ---
 
 ## Coverage Map
 
-| Requirement | Phase |
-|-------------|-------|
-| AUTH-01 | Phase 1 |
-| AUTH-02 | Phase 1 |
-| AUTH-03 | Phase 1 |
-| AUTH-04 | Phase 1 |
-| AUTH-05 | Phase 1 |
-| AUTH-06 | Phase 1 |
-| CONT-01 | Phase 2 |
-| CONT-02 | Phase 2 |
-| CONT-03 | Phase 3 |
-| CONT-04 | Phase 2 |
-| CONT-05 | Phase 2 |
-| CONT-06 | Phase 2 |
-| LOGS-01 | Phase 4 |
-| LOGS-02 | Phase 4 |
-| LOGS-03 | Phase 4 |
-| LOGS-04 | Phase 4 |
-| SSH-01 | Phase 5 |
-| SSH-02 | Phase 5 |
-| SSH-03 | Phase 5 |
-| SSH-04 | Phase 5 |
-| SSH-05 | Phase 5 |
-| SSH-06 | Phase 5 |
-| MOBL-01 | Phase 6 |
-| MOBL-02 | Phase 6 |
-| MOBL-03 | Phase 6 |
-| MOBL-04 | Phase 6 |
-| MOBL-05 | Phase 6 |
+| Requirement | Phase | Phase Name | Status |
+|-------------|-------|------------|--------|
+| AUTH-01 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| AUTH-02 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| AUTH-03 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| AUTH-04 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| AUTH-05 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| AUTH-06 | Phase 1 | Auth Foundation | ✅ Shipped v1.0 |
+| CONT-01 | Phase 2 | Container Dashboard | ✅ Shipped v1.0 |
+| CONT-02 | Phase 2 | Container Dashboard | ✅ Shipped v1.0 |
+| CONT-03 | Phase 3 | Real-Time Container Status | ✅ Shipped v1.0 |
+| CONT-04 | Phase 2 | Container Dashboard | ✅ Shipped v1.0 |
+| CONT-05 | Phase 2 | Container Dashboard | ✅ Shipped v1.0 |
+| CONT-06 | Phase 2 | Container Dashboard | ✅ Shipped v1.0 |
+| LOGS-01 | Phase 4 | Log Streaming | ✅ Shipped v1.0 |
+| LOGS-02 | Phase 4 | Log Streaming | ✅ Shipped v1.0 |
+| LOGS-03 | Phase 4 | Log Streaming | ✅ Shipped v1.0 |
+| LOGS-04 | Phase 4 | Log Streaming | ✅ Shipped v1.0 |
+| SSH-01 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| SSH-02 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| SSH-03 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| SSH-04 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| SSH-05 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| SSH-06 | Phase 5 | SSH Terminal | ✅ Shipped v1.1 |
+| MOBL-01 | Phase 6 | Mobile Polish & PWA | Pending |
+| MOBL-02 | Phase 6 | Mobile Polish & PWA | Pending |
+| MOBL-03 | Phase 6 | Mobile Polish & PWA | Pending |
+| MOBL-04 | Phase 6 | Mobile Polish & PWA | Pending |
+| MOBL-05 | Phase 6 | Mobile Polish & PWA | Pending |
 
-**Total mapped: 27/27 ✓** (16 shipped in v1.0 + 11 active in v1.1)
+**Total mapped: 27/27 ✓** (16 shipped in v1.0 + 6 shipped in v1.1 + 5 active in v1.2)
 
 ---
 *Roadmap created: 2026-05-25*  
 *v1.1 milestone started: 2026-05-26 — Phases 1–4 shipped*  
-*Next: `/gsd-plan-phase 5`*
+*v1.2 milestone started: 2026-05-29 — Phase 5 shipped*  
+*Next: `/gsd-plan-phase 6`*

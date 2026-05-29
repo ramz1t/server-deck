@@ -23,10 +23,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 6 — Mobile Polish & PWA (next)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-29 — Milestone v1.2 started
+Status: Roadmap created, ready to plan
+Last activity: 2026-05-29 — Milestone v1.2 roadmap created
 
 ## Phase Summary
 
@@ -37,7 +37,7 @@ Last activity: 2026-05-29 — Milestone v1.2 started
 | 3 | Real-Time Container Status | **Complete** (shipped v1.0) |
 | 4 | Log Streaming | **Complete** (shipped v1.0) |
 | 5 | SSH Terminal | **Complete** (2/2 plans done — 2026-05-26) |
-| 6 | Mobile Polish + Hardening | Not started |
+| 6 | Mobile Polish & PWA | Not started |
 
 ---
 
