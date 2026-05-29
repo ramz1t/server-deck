@@ -1,7 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
-import { HardDrive, MemoryStick, Clock } from 'lucide-react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { HardDrive, MemoryStick, Clock, Container, Trash2 } from 'lucide-react'
 import { api } from '../lib/axios'
 import { Skeleton } from './ui/skeleton'
+import { Button } from './ui/button'
 
 interface ServerStats {
   disk: { filesystem: string; total: number; used: number; available: number; usePercent: number }
@@ -9,6 +10,12 @@ interface ServerStats {
   uptime: { seconds: number; human: string }
   mntSdb: Array<{ name: string; bytes: number; human: string; modifiedAt: number | null }> | null
   mntSdbDisk: { total: number; used: number; available: number; usePercent: number } | null
+  dockerDf: {
+    images:     { total: number; active: number; size: string; reclaimable: string }
+    containers: { total: number; active: number; size: string; reclaimable: string }
+    volumes:    { total: number; active: number; size: string; reclaimable: string }
+    buildCache: { total: number; active: number; size: string; reclaimable: string }
+  } | null
 }
 
 function formatBytes(bytes: number): string {
@@ -34,11 +41,19 @@ async function fetchStats(): Promise<ServerStats> {
 }
 
 export function StatsPanel() {
+  const queryClient = useQueryClient()
   const { data, isLoading, isError } = useQuery<ServerStats>({
     queryKey: ['stats'],
     queryFn: fetchStats,
     refetchInterval: 30_000,
     staleTime: 25_000,
+  })
+
+  const pruneMutation = useMutation({
+    mutationFn: () => api.post('/docker/prune'),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['stats'] })
+    },
   })
 
   if (isLoading) {
@@ -94,6 +109,45 @@ export function StatsPanel() {
             ))}
           </div>
         </div>
+      )}
+      {data.dockerDf && (
+        <>
+          <div className="flex items-center justify-between px-4 py-2 bg-zinc-900">
+            <div className="flex items-center gap-3">
+              <Container className="h-4 w-4 text-muted-foreground shrink-0" />
+              <p className="text-xs text-muted-foreground">Docker</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 rounded-none text-red-400 hover:bg-red-500/10 hover:text-red-400"
+              onClick={() => pruneMutation.mutate()}
+              disabled={pruneMutation.isPending}
+              title="docker system prune -f"
+              aria-label="Clear unused Docker data"
+            >
+              <Trash2 className={`h-3.5 w-3.5 ${pruneMutation.isPending ? 'animate-pulse' : ''}`} />
+            </Button>
+          </div>
+          <div className="px-4 py-2 bg-zinc-900 space-y-1 pl-11">
+            {(
+              [
+                ['Images',      data.dockerDf.images],
+                ['Containers',  data.dockerDf.containers],
+                ['Volumes',     data.dockerDf.volumes],
+                ['Build cache', data.dockerDf.buildCache],
+              ] as const
+            ).map(([label, row]) => (
+              <div key={label} className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground/70 w-24 shrink-0">{label}</span>
+                <span className="text-xs font-mono flex-1">{row.size}</span>
+                {row.reclaimable !== '0B' && row.reclaimable !== '0 B' && (
+                  <span className="text-xs text-yellow-500/70 shrink-0">↓ {row.reclaimable}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

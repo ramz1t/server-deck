@@ -137,6 +137,12 @@ export interface ServerStats {
     available: number
     usePercent: number // 0-100
   } | null             // null when /mnt/sdb is not a mounted filesystem
+  dockerDf: {
+    images:     { total: number; active: number; size: string; reclaimable: string }
+    containers: { total: number; active: number; size: string; reclaimable: string }
+    volumes:    { total: number; active: number; size: string; reclaimable: string }
+    buildCache: { total: number; active: number; size: string; reclaimable: string }
+  } | null             // null when docker is unavailable on the server
 }
 
 // Single combined command — semicolons (not &&) so every section runs regardless.
@@ -148,6 +154,7 @@ const STATS_CMD =
   "echo '__MNT__'; du -sb /mnt/sdb/* 2>/dev/null; " +
   "echo '__MNT_DISK__'; df -B1 /mnt/sdb 2>/dev/null; " +
   "echo '__MNT_TIME__'; stat -c '%Y %n' /mnt/sdb/* 2>/dev/null; " +
+  "echo '__DOCKER_DF__'; docker system df 2>/dev/null; " +
   "echo '__END__'; true"
 
 // 30-second in-memory cache — stats don't change meaningfully in 30 s.
@@ -156,7 +163,7 @@ let _statsCache: { data: ServerStats; expiresAt: number } | null = null
 const STATS_CACHE_TTL = 30_000
 
 function _splitSections(raw: string): Record<string, string> {
-  const MARKERS = ['__DISK__', '__RAM__', '__UPTIME__', '__MNT__', '__MNT_DISK__', '__MNT_TIME__', '__END__']
+  const MARKERS = ['__DISK__', '__RAM__', '__UPTIME__', '__MNT__', '__MNT_DISK__', '__MNT_TIME__', '__DOCKER_DF__', '__END__']
   const sections: Record<string, string> = {}
   let current = ''
   for (const line of raw.split('\n')) {
@@ -267,6 +274,34 @@ function _parseDiskMnt(section: string): ServerStats['mntSdbDisk'] {
   return { total, used, available, usePercent }
 }
 
+function _parseDockerDf(section: string): ServerStats['dockerDf'] {
+  const trimmed = section.trim()
+  if (!trimmed) return null
+  const lines = trimmed.split('\n').filter(Boolean)
+  // Header row + up to 4 data rows: Images, Containers, Local Volumes, Build Cache
+  if (lines.length < 2) return null
+
+  function parseLine(label: string) {
+    const line = lines.find((l) => l.startsWith(label))
+    if (!line) return { total: 0, active: 0, size: '0B', reclaimable: '0B' }
+    // docker system df columns: TYPE  TOTAL  ACTIVE  SIZE  RECLAIMABLE
+    const parts = line.trim().split(/\s{2,}/)
+    return {
+      total: parseInt(parts[1] ?? '0', 10) || 0,
+      active: parseInt(parts[2] ?? '0', 10) || 0,
+      size: parts[3] ?? '0B',
+      reclaimable: (parts[4] ?? '0B').replace(/\s*\(.*\)/, '').trim(),
+    }
+  }
+
+  return {
+    images:     parseLine('Images'),
+    containers: parseLine('Containers'),
+    volumes:    parseLine('Local Volumes'),
+    buildCache: parseLine('Build Cache'),
+  }
+}
+
 function _parseStats(raw: string): ServerStats {
   const s = _splitSections(raw)
   const mntTimes = _parseMntTimes(s['__MNT_TIME__'] ?? '')
@@ -276,6 +311,7 @@ function _parseStats(raw: string): ServerStats {
     uptime: _parseUptime(s['__UPTIME__'] ?? ''),
     mntSdb: _parseMntSdb(s['__MNT__'] ?? '', mntTimes),
     mntSdbDisk: _parseDiskMnt(s['__MNT_DISK__'] ?? ''),
+    dockerDf: _parseDockerDf(s['__DOCKER_DF__'] ?? ''),
   }
 }
 
@@ -287,4 +323,11 @@ export async function getServerStats(session: SessionData): Promise<ServerStats>
   const data = _parseStats(raw)
   _statsCache = { data, expiresAt: Date.now() + STATS_CACHE_TTL }
   return data
+}
+
+export async function dockerSystemPrune(session: SessionData): Promise<string> {
+  const output = await sshExec(session, 'docker system prune -f 2>&1; true')
+  // Invalidate stats cache so next fetch reflects reclaimed space
+  _statsCache = null
+  return output
 }

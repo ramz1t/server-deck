@@ -1,5 +1,5 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
-import { getServerStats } from '../services/docker-ssh.js'
+import { getServerStats, dockerSystemPrune } from '../services/docker-ssh.js'
 import type { SessionData } from '../types/session.js'
 
 function getSession(request: FastifyRequest): SessionData {
@@ -19,6 +19,17 @@ export async function statsRoutes(fastify: FastifyInstance): Promise<void> {
     } catch (err) {
       fastify.log.error(err, 'Failed to fetch server stats')
       return reply.status(502).send({ error: 'Failed to fetch server stats' })
+    }
+  })
+
+  fastify.post('/api/docker/prune', async (request: FastifyRequest, reply: FastifyReply) => {
+    const session = getSession(request)
+    try {
+      const output = await dockerSystemPrune(session)
+      return { output }
+    } catch (err) {
+      fastify.log.error(err, 'Failed to run docker system prune')
+      return reply.status(502).send({ error: 'Failed to run docker system prune' })
     }
   })
 }
