@@ -1,12 +1,12 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Complete the Vision
-status: Defining requirements
-last_updated: "2026-05-26T09:14:57.187Z"
-last_activity: 2026-05-26 — Milestone v1.1 started
+milestone: v1.2
+milestone_name: Mobile Polish & PWA
+status: planning
+last_updated: "2026-05-29T08:21:24.344Z"
+last_activity: 2026-05-29
 progress:
-  total_phases: 6
+  total_phases: 0
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -23,10 +23,10 @@ progress:
 
 ## Current Position
 
-Phase: 6 — Mobile Polish + Hardening (next)
+Phase: Not started (defining requirements)
 Plan: —
-Status: Phase 5 complete; Phase 6 ready to plan
-Last activity: 2026-05-26 — Phase 5 SSH Terminal executed and verified
+Status: Defining requirements
+Last activity: 2026-05-29 — Milestone v1.2 started
 
 ## Phase Summary
 

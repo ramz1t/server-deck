@@ -8,13 +8,16 @@ ServerDeck is a mobile-friendly personal server dashboard that gives you a real-
 
 From any phone browser, see what's running on your server and drop into a shell — no apps, no VPN setup, no switching tools.
 
-## Current Milestone: v1.1 Complete the Vision
+## Current Milestone: v1.2 Mobile Polish & PWA
 
-**Goal:** Ship the full original product vision — an interactive SSH terminal and a production-ready mobile experience.
+**Goal:** Ship a polished mobile-first experience and make the app installable as a PWA on iOS and Android.
 
 **Target features:**
-- SSH Terminal — PTY-backed shell accessible from any phone browser via WebSocket
-- Mobile Polish + PWA — 390px-optimised layout, iOS keyboard handling, installable via home screen
+- 390px layout fully usable on all screens
+- iOS virtual keyboard handling in terminal (dvh units + debounced resize)
+- 44×44px minimum tap targets throughout all interactive elements
+- Autocorrect/autocapitalize disabled in terminal input
+- PWA manifest + service worker stub (installable via home screen on iOS/Android)
 
 ## Requirements
 
@@ -25,13 +28,14 @@ From any phone browser, see what's running on your server and drop into a shell 
 - [x] User can start, stop, and restart any container (Phase 2 — Container Dashboard)
 - [x] Container list updates live without a page reload (Phase 3 — Real-Time Status)
 - [x] User can view live logs for any container (Phase 4 — Log Streaming)
+- [x] User can open a web-based SSH terminal to the server (Phase 5 — SSH Terminal)
 
 ### Active
 
-- [ ] User can open a web-based SSH terminal to the server (Phase 5)
-- [ ] The UI is mobile-first and production-ready on a phone screen (Phase 6)
+- [ ] All screens are usable on a 390px-wide phone screen (Phase 6)
+- [ ] Terminal viewport adjusts correctly when iOS virtual keyboard appears (Phase 6)
+- [ ] Touch targets meet 44×44px minimum tap target size (Phase 6)
 - [ ] App is installable as a PWA (Phase 6)
-- [ ] Session persists across browser refresh
 
 ### Out of Scope
 
@@ -87,4 +91,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-26 — Milestone v1.1 started (phases 1–4 shipped)*
+*Last updated: 2026-05-29 — Milestone v1.2 started (v1.1 phases 1–5 shipped)*
