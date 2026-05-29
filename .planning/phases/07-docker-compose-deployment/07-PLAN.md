@@ -23,7 +23,7 @@ must_haves:
     - "The React SPA is served at `/` from the running container"
     - "The API responds at `/api/*` from the running container"
     - "Setting `VITE_API_BASE=http://localhost:3001` at build time sends all axios requests to that origin"
-    - "Leaving `VITE_API_BASE` unset (empty) keeps axios requests same-origin (no `/api` prefix hardcoded)"
+    - "Leaving `VITE_API_BASE` unset (empty) keeps axios requests same-origin at `/api/...` paths"
     - "`VITE_BASE` defaults to `/` and controls the Vite build base path and PWA manifest start_url/scope"
     - "`docker-compose up` exits immediately with an error if `JWT_SECRET` is not set in the environment"
   artifacts:
@@ -108,16 +108,16 @@ Make exactly three edits across two files. Do not restructure any other logic.
 Change line 4 only. Replace the hardcoded `baseURL: '/api'` with the env-driven value:
 
   BEFORE: `  baseURL: '/api',`
-  AFTER:  `  baseURL: import.meta.env.VITE_API_BASE || '',`
+  AFTER:  `  baseURL: import.meta.env.VITE_API_BASE || '/api',`
 
-Semantics: When `VITE_API_BASE` is set (e.g. `http://localhost:3001`) at build time, axios uses that origin as the base. When it is empty or unset, baseURL becomes `''` — all requests are same-origin relative paths, which is correct for the production container where the server and SPA share the same origin (DEPLOY-02). The 401-redirect interceptor and `withCredentials: true` remain untouched.
+Semantics: When `VITE_API_BASE` is set (e.g. `http://localhost:3001`) at build time, axios uses that full origin as the base. When it is empty or unset, baseURL falls back to `'/api'` — all existing frontend calls (`api.get('/containers')`, `api.post('/auth/login')`, etc.) correctly resolve to `/api/containers`, `/api/auth/login`, etc. on the same origin (DEPLOY-02). The 401-redirect interceptor and `withCredentials: true` remain untouched.
 
 The complete file after the change must be:
 ```
 import axios from 'axios'
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE || '',
+  baseURL: import.meta.env.VITE_API_BASE || '/api',
   withCredentials: true,
 })
 
@@ -202,7 +202,7 @@ export default defineConfig({
     <automated>cd packages/web && pnpm run build 2>&amp;1 | tail -5</automated>
   </verify>
   <done>
-    - `packages/web/src/lib/axios.ts` line 4 reads `baseURL: import.meta.env.VITE_API_BASE || ''`
+    - `packages/web/src/lib/axios.ts` line 4 reads `baseURL: import.meta.env.VITE_API_BASE || '/api'`
     - `packages/web/vite.config.ts` has `base: process.env.VITE_BASE ?? '/'` as first key in defineConfig
     - `packages/web/vite.config.ts` VitePWA manifest has `start_url: process.env.VITE_BASE ?? '/'` and `scope: process.env.VITE_BASE ?? '/'`
     - `pnpm run build` in packages/web exits 0 with no TypeScript errors
@@ -231,7 +231,7 @@ FROM node:22-alpine AS web-builder
 WORKDIR /app
 
 # Copy manifests first for layer-cache efficiency
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 COPY packages/web/package.json ./packages/web/
 
 RUN corepack enable && pnpm install --frozen-lockfile --filter @serverdeck/web
@@ -252,7 +252,7 @@ RUN pnpm --filter @serverdeck/web build
 FROM node:22-alpine AS server-builder
 WORKDIR /app
 
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 COPY packages/server/package.json ./packages/server/
 
 RUN corepack enable && pnpm install --frozen-lockfile --filter @serverdeck/server
@@ -267,7 +267,7 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Install production deps only (no devDependencies)
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 COPY packages/server/package.json ./packages/server/
 
 RUN corepack enable && pnpm install --frozen-lockfile --filter @serverdeck/server --prod
@@ -343,6 +343,12 @@ services:
       SESSION_MAX_AGE_HOURS: ${SESSION_MAX_AGE_HOURS:-24}
       LOG_LEVEL: ${LOG_LEVEL:-info}
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 ```
 
 ---

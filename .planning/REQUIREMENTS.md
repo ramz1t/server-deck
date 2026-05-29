@@ -52,7 +52,17 @@
 - [x] **MOBL-04**: Autocorrect and autocapitalize are disabled in the terminal input
 - [x] **MOBL-05**: App is installable as a PWA (manifest + service worker stub for offline shell)
 
-## v2 Requirements
+## v2 Requirements (Phase 7 — Docker Compose Deployment)
+
+### Deployment
+
+- [ ] **DEPLOY-01**: The entire app (server + frontend) starts with a single `docker-compose up` command
+- [ ] **DEPLOY-02**: `VITE_API_BASE` env var controls the axios base URL — empty/unset means same-origin (prod), a full URL (e.g. `http://localhost:3000`) means proxied dev mode
+- [ ] **DEPLOY-03**: `VITE_BASE` env var controls the Vite `base` path — defaults to `/` so the app works at root or any sub-path
+
+---
+
+## v3 Requirements
 
 ### Container Observability
 
@@ -122,6 +132,9 @@ Which phases cover which requirements. Updated 2026-05-29.
 | MOBL-03 | Phase 6 | Mobile Polish & PWA | Pending |
 | MOBL-04 | Phase 6 | Mobile Polish & PWA | Pending |
 | MOBL-05 | Phase 6 | Mobile Polish & PWA | Pending |
+| DEPLOY-01 | Phase 7 | Docker Compose Deployment | Pending |
+| DEPLOY-02 | Phase 7 | Docker Compose Deployment | Pending |
+| DEPLOY-03 | Phase 7 | Docker Compose Deployment | Pending |
 
 **Coverage:**
 - v1.0 requirements: 16 total — all shipped ✓
