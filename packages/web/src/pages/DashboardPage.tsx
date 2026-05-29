@@ -175,7 +175,7 @@ export function DashboardPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => api.delete(`/api/containers/${id}`),
+    mutationFn: (id: string) => api.delete(`/containers/${id}`),
     onMutate: (id) => {
       setActingContainers((prev) => new Set(prev).add(id));
     },
