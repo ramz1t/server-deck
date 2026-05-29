@@ -63,9 +63,9 @@ body {
   padding-bottom: 6px;
 }
 
-/* Move xterm's char measurement element off-screen — keeps it in layout so
-   xterm.js can still read its dimensions, but hides it from view. */
-.terminal-container .xterm-char-measure-element {
+/* Move xterm's helper elements off-screen — keeps them in layout so
+   xterm.js can still read dimensions, but hides them from view. */
+.terminal-container .xterm-helpers {
   position: absolute !important;
   left: -9999px !important;
   top: -9999px !important;
