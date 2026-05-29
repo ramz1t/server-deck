@@ -133,7 +133,10 @@ Plans:
   3. All interactive elements (buttons, container rows, toolbar keys) have a minimum 44 × 44 px tap target — verified with browser DevTools
   4. The terminal input area has `autocorrect="off"` and `autocapitalize="off"` — iOS does not auto-correct shell commands
   5. Every screen (login, dashboard, log view, terminal) is fully usable on a 390px-wide display — no horizontal scroll, no clipped content
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 06-PLAN.md — Infra fixes (static serving + auth scope), tap targets (MOBL-03), PWA install (MOBL-05)
 **UI hint**: yes
 
 ---
