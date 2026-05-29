@@ -62,3 +62,9 @@ body {
 .terminal-container .xterm {
   padding-bottom: 6px;
 }
+
+/* Hide xterm's internal character measurement element — it's a zero-size helper
+   that xterm.js injects into the DOM but should never be visually rendered. */
+.terminal-container .xterm-char-measure-element {
+  display: none !important;
+}
