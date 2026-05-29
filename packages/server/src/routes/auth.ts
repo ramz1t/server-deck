@@ -88,6 +88,6 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     if (!session) {
       return reply.status(401).send({ error: 'Session not found' })
     }
-    return { ok: true, host: session.host, username: session.username }
+    return { ok: true, host: session.host, port: session.port, username: session.username }
   })
 }
