@@ -87,9 +87,9 @@ export function ContainerCard({
       <div className="flex justify-end gap-2">
         {/* Logs — always visible */}
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
-          className="h-11 w-11 rounded-none"
+          className="h-11 w-11 rounded-none border-0 bg-zinc-800 hover:bg-zinc-700"
           onClick={() => onLogs(container.id)}
           aria-label="View logs"
         >
@@ -101,7 +101,7 @@ export function ContainerCard({
             <Button
               variant="outline"
               size="icon"
-              className="h-11 w-11 rounded-none"
+              className="h-11 w-11 rounded-none border-0 bg-zinc-800 hover:bg-zinc-700"
               disabled={isActing}
               onClick={() => onRestart(container.id)}
               aria-label="Restart"
@@ -119,7 +119,7 @@ export function ContainerCard({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-11 w-11 rounded-none border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-400"
+                  className="h-11 w-11 rounded-none border-0 bg-zinc-800 text-red-400 hover:bg-zinc-700 hover:text-red-400"
                   disabled={isActing}
                   aria-label="Stop"
                 >
@@ -152,7 +152,7 @@ export function ContainerCard({
           <Button
             variant="outline"
             size="icon"
-            className="h-11 w-11 rounded-none"
+            className="h-11 w-11 rounded-none border-0 bg-zinc-800 hover:bg-zinc-700"
             disabled
             aria-label="Restarting"
           >
@@ -164,7 +164,7 @@ export function ContainerCard({
           <Button
             variant="outline"
             size="icon"
-            className="h-11 w-11 rounded-none"
+            className="h-11 w-11 rounded-none border-0 bg-zinc-800 hover:bg-zinc-700"
             disabled={isActing}
             onClick={() => onStart(container.id)}
             aria-label="Start"
