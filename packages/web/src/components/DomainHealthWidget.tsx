@@ -140,7 +140,7 @@ export function DomainHealthWidget() {
         <div className="px-4 py-3 text-xs text-muted-foreground bg-zinc-900">Checking…</div>
       )}
 
-      <div className="bg-zinc-900 divide-y divide-zinc-800/0 flex flex-col gap-4 p-3">
+      <div className="divide-y divide-zinc-800/0 flex flex-col gap-4 p-3">
         {groups.map((group) => (
           <div key={group.domain} className="flex flex-col gap-1.5">
             {/* Domain group header */}
