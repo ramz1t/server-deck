@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Server, RefreshCw, AlertCircle, Layers, ChevronRight, TerminalSquare, LogOut } from 'lucide-react'
+import { Server, RefreshCw, AlertCircle, TerminalSquare, LogOut } from 'lucide-react'
 import { api } from '../lib/axios'
-import { ContainerCard } from '../components/ContainerCard'
+import { ContainerGroup } from '../components/ContainerGroup'
 import { Button } from '../components/ui/button'
 import { Skeleton } from '../components/ui/skeleton'
 import { useContainerEvents } from '../hooks/useContainerEvents'
@@ -143,23 +143,6 @@ export function DashboardPage() {
   const hasStandalone = groups.some((g) => g.key.startsWith('__standalone__'))
   const showGroupHeaders = namedGroupCount > 1 || (namedGroupCount >= 1 && hasStandalone)
 
-  // collapsedGroups tracks which groups are explicitly collapsed; empty set = all expanded
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set())
-
-  function isExpanded(key: string): boolean {
-    if (key === '__standalone__') return true
-    return !collapsedGroups.has(key)
-  }
-
-  function toggleGroup(key: string) {
-    setCollapsedGroups((prev) => {
-      const next = new Set(prev)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
-      return next
-    })
-  }
-
   return (
     <div className="min-h-svh flex flex-col bg-background">
       {/* Sticky header */}
@@ -266,75 +249,20 @@ export function DashboardPage() {
           )}
 
           {/* Grouped container list */}
-          {!isLoading && !isError && groups.map((group) => {
-            const isStandalone = group.key === '__standalone__'
-            const expanded = isExpanded(group.key)
-            const runningCount = group.containers.filter((c) => c.state === 'running').length
-            const totalCount = group.containers.length
-            const allRunning = runningCount === totalCount
-            const someRunning = runningCount > 0
-
-            return (
-              <div key={group.key} className="bg-zinc-900 rounded-none p-3">
-                {showGroupHeaders && isStandalone && (
-                  <div className="flex items-center gap-2 pt-2 pb-1">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Other
-                    </span>
-                    <div className="flex-1 h-px bg-zinc-800" />
-                  </div>
-                )}
-                {showGroupHeaders && !isStandalone && (
-                  <button
-                    type="button"
-                    onClick={() => toggleGroup(group.key)}
-                    className="w-full flex items-center gap-2 pt-2 pb-1 text-left group min-h-[44px]"
-                    aria-expanded={expanded}
-                  >
-                    <Layers className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex-1">
-                      {group.label}
-                    </span>
-                    <span
-                      className={[
-                        'text-xs font-semibold tabular-nums px-1.5 py-0.5 rounded',
-                        allRunning
-                          ? 'text-green-400 bg-green-500/10'
-                          : someRunning
-                          ? 'text-yellow-400 bg-yellow-500/10'
-                          : 'text-red-400 bg-red-500/10',
-                      ].join(' ')}
-                    >
-                      {runningCount}/{totalCount}
-                    </span>
-                    <ChevronRight
-                      className={[
-                        'h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 shrink-0',
-                        expanded ? 'rotate-90' : '',
-                      ].join(' ')}
-                    />
-                  </button>
-                )}
-                <div className={`grid transition-all duration-300 ease-in-out ${expanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
-                  <div className="overflow-hidden">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pt-1">
-                      {group.containers.map((container) => (
-                        <ContainerCard
-                          key={container.id}
-                          container={container}
-                          isActing={actingContainers.has(container.id)}
-                          onStart={(id) => handleAction(id, 'start')}
-                          onStop={(id) => handleAction(id, 'stop')}
-                          onRestart={(id) => handleAction(id, 'restart')}
-                          onLogs={handleLogs}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
+          {!isLoading && !isError && groups.map((group) => (
+            <ContainerGroup
+              key={group.key}
+              groupKey={group.key}
+              label={group.label}
+              containers={group.containers}
+              showHeader={showGroupHeaders}
+              actingContainers={actingContainers}
+              onStart={(id) => handleAction(id, 'start')}
+              onStop={(id) => handleAction(id, 'stop')}
+              onRestart={(id) => handleAction(id, 'restart')}
+              onLogs={handleLogs}
+            />
+          ))}
 
         </div>
       </main>
