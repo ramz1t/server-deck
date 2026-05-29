@@ -7,6 +7,7 @@ import { ContainerCard } from '../components/ContainerCard'
 import { Button } from '../components/ui/button'
 import { Skeleton } from '../components/ui/skeleton'
 import { useContainerEvents } from '../hooks/useContainerEvents'
+import { PWAInstallBanner } from '../components/PWAInstallBanner'
 
 interface ContainerInfo {
   id: string
@@ -200,6 +201,9 @@ export function DashboardPage() {
           </div>
         </div>
       </header>
+
+      {/* PWA install banner — between header and content */}
+      <PWAInstallBanner />
 
       {/* Mobile: user@host below header */}
       <div className="sm:hidden px-4 pt-2 pb-0">
