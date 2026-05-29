@@ -21,6 +21,7 @@
 - [x] **Phase 4: Log Streaming** — Users can watch live container logs stream in the browser *(shipped v1.0)*
 - [x] **Phase 5: SSH Terminal** — Users can open a full PTY-backed SSH terminal from a phone browser
 - [x] **Phase 6: Mobile Polish & PWA** — The app is fully usable on a 390px phone and installable as a PWA (completed 2026-05-29)
+- [ ] **Phase 7: Docker Compose Deployment** — The app ships as a single `docker-compose.yml`; frontend base path and API base URL are runtime-configurable for dev and prod
 
 ---
 
@@ -139,9 +140,21 @@ Plans:
 - [ ] 06-PLAN.md — Infra fixes (static serving + auth scope), tap targets (MOBL-03), PWA install (MOBL-05)
 **UI hint**: yes
 
----
+### Phase 7: Docker Compose Deployment
+**Goal**: The entire app runs via `docker-compose up`; `VITE_BASE` controls the frontend base path and `VITE_API_BASE` controls the API base URL (empty for prod same-origin, `http://localhost:3000` for dev)
+**Mode:** mvp
+**Depends on**: Phase 1
+**Requirements**: DEPLOY-01, DEPLOY-02, DEPLOY-03
+**Success Criteria** (what must be TRUE):
+  1. `docker-compose up` builds and starts the server; the React SPA is served at `/` and the API responds at `/api/*`
+  2. Setting `VITE_API_BASE=http://localhost:3000` in dev makes all axios requests go to that origin; leaving it unset (or empty) keeps requests same-origin in prod
+  3. The frontend Vite `base` path is configurable via `VITE_BASE` (defaults to `/`) so the app can be hosted at a sub-path
+**Plans**: 1 plan
 
-## Progress
+Plans:
+- [ ] 07-PLAN.md — Patch axios/vite config; create Dockerfile, .dockerignore, docker-compose.yml, .env.example; smoke test
+
+---
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -151,6 +164,7 @@ Plans:
 | 4. Log Streaming | 2/2 | ✅ Done | 2026-05-26 |
 | 5. SSH Terminal | 2/2 | ✅ Done | 2026-05-26 |
 | 6. Mobile Polish & PWA | 1/1 | Complete   | 2026-05-29 |
+| 7. Docker Compose Deployment | 0/1 | Pending | — |
 
 ---
 
