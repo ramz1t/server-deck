@@ -21,13 +21,6 @@ export function TerminalPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-[#09090b] overflow-hidden">
-      {/* Status bar */}
-      <div className="shrink-0 border-b border-zinc-800 px-4 py-1.5 flex items-center justify-end">
-        <span className={`text-xs px-2 py-0.5 ${badge.colorClass}`}>
-          {badge.text}
-        </span>
-      </div>
-
       {/* Terminal area */}
       <main className="flex-1 relative overflow-hidden min-h-0">
         <div
@@ -73,7 +66,14 @@ export function TerminalPage() {
         )}
       </main>
 
-      <TouchToolbar sendKey={sendKey} />
+      <TouchToolbar
+        sendKey={sendKey}
+        statusChip={
+          <span className={`text-xs px-2 py-0.5 ${badge.colorClass}`}>
+            {badge.text}
+          </span>
+        }
+      />
       <div className="shrink-0 bg-zinc-900" style={{ height: 'env(safe-area-inset-bottom)' }} />
     </div>
   )

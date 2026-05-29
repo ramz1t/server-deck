@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 export interface TouchToolbarProps {
   sendKey: (sequence: string) => void
+  statusChip?: React.ReactNode
   className?: string
 }
 
@@ -25,13 +26,11 @@ const BASE_BTN =
   'hover:bg-zinc-700 active:bg-zinc-600 transition-colors ' +
   'select-none touch-manipulation'
 
-export function TouchToolbar({ sendKey, className }: TouchToolbarProps) {
+export function TouchToolbar({ sendKey, statusChip, className }: TouchToolbarProps) {
   const [ctrlActive, setCtrlActive] = useState(false)
 
   function handleKey(sequence: string) {
     if (ctrlActive) {
-      // Apply Ctrl modifier: single-char sequences use charCode & 0x1f (ASCII ctrl codes).
-      // Multi-char sequences (arrows, Esc) are sent as-is — Ctrl+arrow isn't meaningful in PTY.
       const modified =
         sequence.length === 1
           ? String.fromCharCode(sequence.charCodeAt(0) & 0x1f)
@@ -50,46 +49,57 @@ export function TouchToolbar({ sendKey, className }: TouchToolbarProps) {
   return (
     <div
       className={[
-        'shrink-0 h-[44px] bg-zinc-900 border-t border-zinc-800 z-20 flex items-center overflow-x-auto',
+        'shrink-0 h-[44px] bg-zinc-900 border-t border-zinc-800 z-20 flex items-center',
         className ?? '',
       ]
         .filter(Boolean)
         .join(' ')}
-      style={{
-        WebkitOverflowScrolling: 'touch' as React.CSSProperties['WebkitOverflowScrolling'],
-        scrollbarWidth: 'none',
-      } as React.CSSProperties}
     >
-      {/* Ctrl modifier button — first in order (D-P5-10) */}
-      <button
-        type="button"
-        aria-label="Control"
-        aria-pressed={ctrlActive}
-        onClick={handleCtrl}
-        className={[
-          BASE_BTN,
-          ctrlActive
-            ? 'bg-blue-500/20 text-blue-400 ring-2 ring-blue-500/60 ring-inset'
-            : '',
-        ]
-          .filter(Boolean)
-          .join(' ')}
+      {/* Scrollable buttons area */}
+      <div
+        className="flex items-center overflow-x-auto flex-1 min-w-0"
+        style={{
+          WebkitOverflowScrolling: 'touch' as React.CSSProperties['WebkitOverflowScrolling'],
+          scrollbarWidth: 'none',
+        } as React.CSSProperties}
       >
-        Ctrl
-      </button>
-
-      {/* Remaining 10 keys */}
-      {TOOLBAR_KEYS.map(({ label, sequence, ariaLabel }) => (
+        {/* Ctrl modifier button */}
         <button
-          key={label}
           type="button"
-          aria-label={ariaLabel}
-          onClick={() => handleKey(sequence)}
-          className={BASE_BTN}
+          aria-label="Control"
+          aria-pressed={ctrlActive}
+          onClick={handleCtrl}
+          className={[
+            BASE_BTN,
+            ctrlActive
+              ? 'bg-blue-500/20 text-blue-400 ring-2 ring-blue-500/60 ring-inset'
+              : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
         >
-          {label}
+          Ctrl
         </button>
-      ))}
+
+        {TOOLBAR_KEYS.map(({ label, sequence, ariaLabel }) => (
+          <button
+            key={label}
+            type="button"
+            aria-label={ariaLabel}
+            onClick={() => handleKey(sequence)}
+            className={BASE_BTN}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Status chip — pinned to the right, never scrolls away */}
+      {statusChip && (
+        <div className="shrink-0 pl-1 pr-2 flex items-center border-l border-zinc-800">
+          {statusChip}
+        </div>
+      )}
     </div>
   )
 }
