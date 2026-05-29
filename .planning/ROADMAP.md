@@ -21,7 +21,7 @@
 - [x] **Phase 4: Log Streaming** — Users can watch live container logs stream in the browser *(shipped v1.0)*
 - [x] **Phase 5: SSH Terminal** — Users can open a full PTY-backed SSH terminal from a phone browser
 - [x] **Phase 6: Mobile Polish & PWA** — The app is fully usable on a 390px phone and installable as a PWA (completed 2026-05-29)
-- [ ] **Phase 7: Personal Config & Server Stats** — Connection details move to `.env`; login shows only a password field; dashboard gains server stats (storage, RAM, uptime, /mnt/sdb, domain health); `VITE_API_BASE` configures the API origin for cross-origin deployments
+- [x] **Phase 7: Personal Config & Server Stats** — Connection details move to `.env`; login shows only a password field; dashboard gains server stats (storage, RAM, uptime, /mnt/sdb, domain health); `VITE_API_BASE` configures the API origin for cross-origin deployments (completed 2026-05-30)
 
 ---
 
@@ -163,7 +163,7 @@ Plans:
 | 4. Log Streaming | 2/2 | ✅ Done | 2026-05-26 |
 | 5. SSH Terminal | 2/2 | ✅ Done | 2026-05-26 |
 | 6. Mobile Polish & PWA | 1/1 | Complete   | 2026-05-29 |
-| 7. Personal Config & Server Stats | 0/1 | Pending | — |
+| 7. Personal Config & Server Stats | 1/1 | ✅ Done | 2026-05-30 |
 
 ---
 

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: milestone
-status: completed
-last_updated: "2026-05-29T08:57:25.817Z"
-last_activity: 2026-05-29 -- Phase 6 marked complete
+status: complete
+last_updated: "2026-05-30T00:28:42.578+02:00"
+last_activity: 2026-05-30 -- Phase 7 complete (all phases done)
 progress:
-  total_phases: 6
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
-  percent: 17
+  total_phases: 7
+  completed_phases: 7
+  total_plans: 2
+  completed_plans: 2
+  percent: 100
 ---
 
 # ServerDeck — Project State
@@ -23,10 +23,10 @@ progress:
 
 ## Current Position
 
-Phase: 6 — COMPLETE
+Phase: 7 — COMPLETE (all phases done)
 Plan: —
-Status: Phase 6 complete
-Last activity: 2026-05-29 -- Phase 6 marked complete
+Status: Phase 7 complete — milestone v1.2 complete
+Last activity: 2026-05-30 -- All 7 phases shipped
 
 ## Phase Summary
 
@@ -36,8 +36,9 @@ Last activity: 2026-05-29 -- Phase 6 marked complete
 | 2 | Container Dashboard | **Complete** (shipped v1.0) |
 | 3 | Real-Time Container Status | **Complete** (shipped v1.0) |
 | 4 | Log Streaming | **Complete** (shipped v1.0) |
-| 5 | SSH Terminal | **Complete** (2/2 plans done — 2026-05-26) |
-| 6 | Mobile Polish & PWA | Not started |
+| 5 | SSH Terminal | **Complete** (2026-05-26) |
+| 6 | Mobile Polish & PWA | **Complete** (2026-05-29) |
+| 7 | Personal Config & Server Stats | **Complete** (2026-05-30) |
 
 ---
 
