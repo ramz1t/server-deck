@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.2
-milestone_name: Mobile Polish & PWA
-status: planning
-last_updated: "2026-05-29T08:21:24.344Z"
-last_activity: 2026-05-29
+milestone_name: milestone
+status: completed
+last_updated: "2026-05-29T08:57:25.817Z"
+last_activity: 2026-05-29 -- Phase 6 marked complete
 progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 6
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
+  percent: 17
 ---
 
 # ServerDeck — Project State
@@ -23,10 +23,10 @@ progress:
 
 ## Current Position
 
-Phase: 6 — Mobile Polish & PWA (next)
+Phase: 6 — COMPLETE
 Plan: —
-Status: Roadmap created, ready to plan
-Last activity: 2026-05-29 — Milestone v1.2 roadmap created
+Status: Phase 6 complete
+Last activity: 2026-05-29 -- Phase 6 marked complete
 
 ## Phase Summary
 
@@ -52,6 +52,7 @@ Last activity: 2026-05-29 — Milestone v1.2 roadmap created
 | Phases complete | 0 |
 
 ---
+| Phase 6 P01 | 25 | 6 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -121,3 +122,9 @@ To resume work on this project:
 
 ---
 *State initialized: 2026-05-25 after roadmap creation*
+
+## Decisions
+
+- [Phase ?]: Scoped verifyAuth via early-return guard instead of route restructure
+- [Phase ?]: Generated PNG icons programmatically with Node.js raw PNG construction — no build-time image tool dependency
+- [Phase ?]: Added skipLibCheck to tsconfig.node.json to resolve vite-plugin-pwa optional peer type declarations

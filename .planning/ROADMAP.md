@@ -20,7 +20,7 @@
 - [x] **Phase 3: Real-Time Container Status** — Container list updates live without a page reload *(shipped v1.0)*
 - [x] **Phase 4: Log Streaming** — Users can watch live container logs stream in the browser *(shipped v1.0)*
 - [x] **Phase 5: SSH Terminal** — Users can open a full PTY-backed SSH terminal from a phone browser
-- [ ] **Phase 6: Mobile Polish & PWA** — The app is fully usable on a 390px phone and installable as a PWA
+- [x] **Phase 6: Mobile Polish & PWA** — The app is fully usable on a 390px phone and installable as a PWA (completed 2026-05-29)
 
 ---
 
@@ -150,7 +150,7 @@ Plans:
 | 3. Real-Time Container Status | 2/2 | ✅ Done | 2026-05-26 |
 | 4. Log Streaming | 2/2 | ✅ Done | 2026-05-26 |
 | 5. SSH Terminal | 2/2 | ✅ Done | 2026-05-26 |
-| 6. Mobile Polish & PWA | 0/? | Not started | - |
+| 6. Mobile Polish & PWA | 1/1 | Complete   | 2026-05-29 |
 
 ---
 

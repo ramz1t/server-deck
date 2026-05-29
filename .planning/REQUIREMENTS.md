@@ -46,11 +46,11 @@
 
 ### Mobile UX + PWA
 
-- [ ] **MOBL-01**: All screens are usable on a 390px-wide phone screen (iPhone 15 baseline)
-- [ ] **MOBL-02**: Terminal viewport adjusts correctly when the iOS virtual keyboard appears
-- [ ] **MOBL-03**: Touch targets (buttons, list items) meet 44×44px minimum tap target size
-- [ ] **MOBL-04**: Autocorrect and autocapitalize are disabled in the terminal input
-- [ ] **MOBL-05**: App is installable as a PWA (manifest + service worker stub for offline shell)
+- [x] **MOBL-01**: All screens are usable on a 390px-wide phone screen (iPhone 15 baseline)
+- [x] **MOBL-02**: Terminal viewport adjusts correctly when the iOS virtual keyboard appears
+- [x] **MOBL-03**: Touch targets (buttons, list items) meet 44×44px minimum tap target size
+- [x] **MOBL-04**: Autocorrect and autocapitalize are disabled in the terminal input
+- [x] **MOBL-05**: App is installable as a PWA (manifest + service worker stub for offline shell)
 
 ## v2 Requirements
 
