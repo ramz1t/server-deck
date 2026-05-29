@@ -18,11 +18,11 @@ async function checkUrl(url: string): Promise<DomainResult> {
     const response = await fetch(url, {
       method: 'HEAD',
       signal: controller.signal,
-      redirect: 'follow',
+      redirect: 'manual', // prevent redirect chains from reaching internal addresses
     })
     clearTimeout(timer)
     const latencyMs = Date.now() - start
-    // Any response below 500 counts as "up" — 4xx means reachable
+    // Any response below 500 (including 3xx manual redirects) counts as "up"
     return { url, up: response.status < 500, latencyMs }
   } catch {
     clearTimeout(timer)

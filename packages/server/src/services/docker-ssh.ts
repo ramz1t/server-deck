@@ -175,13 +175,14 @@ function _parseDisk(section: string): ServerStats['disk'] {
   const data = lines.slice(1).join(' ').trim()
   const parts = data.split(/\s+/)
   // parts: [filesystem, 1B-blocks, used, available, use%, mountpoint]
-  return {
-    filesystem: parts[0],
-    total: parseInt(parts[1], 10),
-    used: parseInt(parts[2], 10),
-    available: parseInt(parts[3], 10),
-    usePercent: parseInt(parts[4], 10), // parseInt strips trailing %
+  const total = parseInt(parts[1], 10)
+  const used = parseInt(parts[2], 10)
+  const available = parseInt(parts[3], 10)
+  const usePercent = parseInt(parts[4], 10) // parseInt strips trailing %
+  if (!parts[0] || isNaN(total) || isNaN(used) || isNaN(available) || isNaN(usePercent)) {
+    throw new Error(`Failed to parse disk section: ${JSON.stringify(parts)}`)
   }
+  return { filesystem: parts[0], total, used, available, usePercent }
 }
 
 function _parseRam(section: string): ServerStats['ram'] {
@@ -193,6 +194,9 @@ function _parseRam(section: string): ServerStats['ram'] {
   const total = parseInt(parts[1], 10)
   const used = parseInt(parts[2], 10)
   const available = parseInt(parts[6], 10)
+  if (isNaN(total) || isNaN(used) || isNaN(available)) {
+    throw new Error(`Failed to parse RAM section: ${JSON.stringify(parts)}`)
+  }
   return {
     total,
     used,
@@ -202,7 +206,9 @@ function _parseRam(section: string): ServerStats['ram'] {
 }
 
 function _parseUptime(section: string): ServerStats['uptime'] {
-  const seconds = Math.floor(parseFloat(section.trim().split(/\s+/)[0]))
+  const raw = section.trim().split(/\s+/)[0]
+  const seconds = Math.floor(parseFloat(raw))
+  if (isNaN(seconds)) throw new Error(`Failed to parse uptime: ${JSON.stringify(raw)}`)
   const days = Math.floor(seconds / 86400)
   const hours = Math.floor((seconds % 86400) / 3600)
   const minutes = Math.floor((seconds % 3600) / 60)
