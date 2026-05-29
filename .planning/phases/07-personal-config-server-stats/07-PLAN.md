@@ -943,8 +943,6 @@ Full file:
   }
 
   export function DomainHealthWidget() {
-    if (MONITORED_DOMAINS.length === 0) return null
-
     const { data, isLoading, refetch, isFetching } = useQuery<DomainResult[]>({
       queryKey: ['domain-health'],
       queryFn: fetchDomainHealth,
@@ -952,6 +950,9 @@ Full file:
       staleTime: 30_000,
       retry: false,
     })
+
+    // Early return AFTER hooks — React Rules of Hooks requires all hooks to be called unconditionally
+    if (MONITORED_DOMAINS.length === 0) return null
 
     return (
       <div className="border border-zinc-800">

@@ -1004,7 +1004,7 @@ export async function healthRoutes(fastify: FastifyInstance) {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should `/api/config` return only `host`, or also `port` and `username`?**
    - What we know: CONF-02 only requires the host in the heading
