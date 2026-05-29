@@ -153,10 +153,10 @@ export function DomainHealthWidget() {
             {group.subGroups.map((sub) => {
               const isSingleEntry = sub.entries.length === 1 && sub.entries[0].displayLabel === '/'
               return (
-                <div key={sub.key} className="border border-zinc-800">
+                <div key={sub.key} className="bg-zinc-900">
                   {/* Sub-group header */}
                   {!isSingleEntry && (
-                    <div className="px-3 py-1 border-b border-zinc-800 flex items-center gap-1.5 bg-zinc-800/40">
+                    <div className="px-3 py-1 flex items-center gap-1.5 bg-zinc-800/40">
                       <span className="text-xs text-zinc-400 font-mono font-medium">{sub.label}</span>
                     </div>
                   )}
@@ -167,7 +167,7 @@ export function DomainHealthWidget() {
                       href={result.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between px-3 py-2 border-b border-zinc-800/50 last:border-0 hover:bg-zinc-800/50 transition-colors group"
+                      className="flex items-center justify-between px-3 py-2 hover:bg-zinc-800/50 transition-colors group"
                     >
                       <span className="flex items-center gap-1.5 min-w-0">
                         <span className="text-xs font-mono text-zinc-300 truncate">
