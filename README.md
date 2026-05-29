@@ -1,5 +1,7 @@
 # ServerDeck
 
+> **Note:** This repository is a test playground for [GSD (Get Shit Done)](https://github.com/get-shit-done-cc/get-shit-done) — an AI-driven development workflow. The app itself is real and functional, but the primary purpose of this repo is to exercise GSD's plan/execute/verify cycle.
+
 A mobile-friendly personal server dashboard for monitoring Docker containers and SSH terminal access — built to look good on your phone.
 
 ![Stack](https://img.shields.io/badge/Fastify_5-black?logo=fastify) ![Stack](https://img.shields.io/badge/React_19-black?logo=react) ![Stack](https://img.shields.io/badge/Tailwind_v4-black?logo=tailwindcss)
