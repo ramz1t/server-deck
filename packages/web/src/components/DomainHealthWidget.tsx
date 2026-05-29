@@ -140,48 +140,50 @@ export function DomainHealthWidget() {
         <div className="px-4 py-3 text-xs text-muted-foreground bg-zinc-900">Checking…</div>
       )}
 
-      {groups.map((group) => (
-        <div key={group.domain} className="bg-zinc-900">
-          {/* Domain group header */}
-          <div className="px-4 py-1.5 border-b border-zinc-800/60">
-            <span className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider">
-              {group.domain}
-            </span>
-          </div>
+      <div className="bg-zinc-900 divide-y divide-zinc-800/0 flex flex-col gap-4 p-3">
+        {groups.map((group) => (
+          <div key={group.domain} className="flex flex-col gap-1.5">
+            {/* Domain group header */}
+            <div className="px-1 pb-0.5">
+              <span className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider">
+                {group.domain}
+              </span>
+            </div>
 
-          {group.subGroups.map((sub) => {
-            const isSingleEntry = sub.entries.length === 1 && sub.entries[0].displayLabel === '/'
-            return (
-              <div key={sub.key}>
-                {/* Sub-group header — only show if more than one entry or label is meaningful */}
-                {!isSingleEntry && (
-                  <div className="px-4 py-1 border-b border-zinc-800/40 flex items-center gap-1.5">
-                    <span className="text-xs text-zinc-400 font-mono">{sub.label}</span>
-                  </div>
-                )}
+            {group.subGroups.map((sub) => {
+              const isSingleEntry = sub.entries.length === 1 && sub.entries[0].displayLabel === '/'
+              return (
+                <div key={sub.key} className="border border-zinc-800">
+                  {/* Sub-group header */}
+                  {!isSingleEntry && (
+                    <div className="px-3 py-1 border-b border-zinc-800 flex items-center gap-1.5 bg-zinc-800/40">
+                      <span className="text-xs text-zinc-400 font-mono font-medium">{sub.label}</span>
+                    </div>
+                  )}
 
-                {sub.entries.map(({ result, displayLabel }) => (
-                  <a
-                    key={result.url}
-                    href={result.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between px-4 py-2 border-b border-zinc-800/40 last:border-0 hover:bg-zinc-800/50 transition-colors group"
-                  >
-                    <span className="flex items-center gap-1.5 min-w-0">
-                      <span className="text-xs font-mono text-zinc-300 truncate">
-                        {isSingleEntry ? sub.label : displayLabel}
+                  {sub.entries.map(({ result, displayLabel }) => (
+                    <a
+                      key={result.url}
+                      href={result.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between px-3 py-2 border-b border-zinc-800/50 last:border-0 hover:bg-zinc-800/50 transition-colors group"
+                    >
+                      <span className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-xs font-mono text-zinc-300 truncate">
+                          {isSingleEntry ? sub.label : displayLabel}
+                        </span>
+                        <ExternalLink className="h-3 w-3 text-zinc-600 group-hover:text-zinc-400 shrink-0 transition-colors" />
                       </span>
-                      <ExternalLink className="h-3 w-3 text-zinc-600 group-hover:text-zinc-400 shrink-0 transition-colors" />
-                    </span>
-                    <StatusBadge up={result.up} latencyMs={result.latencyMs} />
-                  </a>
-                ))}
-              </div>
-            )
-          })}
-        </div>
-      ))}
+                      <StatusBadge up={result.up} latencyMs={result.latencyMs} />
+                    </a>
+                  ))}
+                </div>
+              )
+            })}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
