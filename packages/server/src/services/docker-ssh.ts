@@ -129,16 +129,25 @@ export interface ServerStats {
     name: string       // basename only, e.g. "data"
     bytes: number
     human: string      // e.g. "12.3 GB"
+    modifiedAt: number | null  // unix epoch seconds, null if stat unavailable
   }> | null            // null when /mnt/sdb is absent or empty
+  mntSdbDisk: {
+    total: number
+    used: number
+    available: number
+    usePercent: number // 0-100
+  } | null             // null when /mnt/sdb is not a mounted filesystem
 }
 
 // Single combined command — semicolons (not &&) so every section runs regardless.
-// ; true at the end guarantees exit code 0 even if du finds nothing.
+// ; true at the end guarantees exit code 0 even if du/stat/df find nothing.
 const STATS_CMD =
   "echo '__DISK__'; df -B1 /; " +
   "echo '__RAM__'; free -b; " +
   "echo '__UPTIME__'; cat /proc/uptime; " +
   "echo '__MNT__'; du -sb /mnt/sdb/* 2>/dev/null; " +
+  "echo '__MNT_DISK__'; df -B1 /mnt/sdb 2>/dev/null; " +
+  "echo '__MNT_TIME__'; stat -c '%Y %n' /mnt/sdb/* 2>/dev/null; " +
   "echo '__END__'; true"
 
 // 30-second in-memory cache — stats don't change meaningfully in 30 s.
@@ -147,7 +156,7 @@ let _statsCache: { data: ServerStats; expiresAt: number } | null = null
 const STATS_CACHE_TTL = 30_000
 
 function _splitSections(raw: string): Record<string, string> {
-  const MARKERS = ['__DISK__', '__RAM__', '__UPTIME__', '__MNT__', '__END__']
+  const MARKERS = ['__DISK__', '__RAM__', '__UPTIME__', '__MNT__', '__MNT_DISK__', '__MNT_TIME__', '__END__']
   const sections: Record<string, string> = {}
   let current = ''
   for (const line of raw.split('\n')) {
@@ -219,24 +228,54 @@ function _parseUptime(section: string): ServerStats['uptime'] {
   return { seconds, human: parts.join(' ') }
 }
 
-function _parseMntSdb(section: string): ServerStats['mntSdb'] {
+function _parseMntTimes(section: string): Record<string, number> {
+  const result: Record<string, number> = {}
+  for (const line of section.trim().split('\n').filter(Boolean)) {
+    const spaceIdx = line.indexOf(' ')
+    if (spaceIdx < 0) continue
+    const epoch = parseInt(line.slice(0, spaceIdx), 10)
+    const fullPath = line.slice(spaceIdx + 1).trim()
+    const name = fullPath.split('/').pop() ?? fullPath
+    if (!isNaN(epoch)) result[name] = epoch
+  }
+  return result
+}
+
+function _parseMntSdb(section: string, times: Record<string, number>): ServerStats['mntSdb'] {
   const lines = section.trim().split('\n').filter(Boolean)
   if (lines.length === 0) return null
   return lines.map((line) => {
     const [bytesStr, fullPath] = line.split('\t')
     const bytes = parseInt(bytesStr, 10)
     const name = (fullPath ?? '').split('/').pop() ?? fullPath
-    return { name, bytes, human: _formatBytes(bytes) }
+    return { name, bytes, human: _formatBytes(bytes), modifiedAt: times[name] ?? null }
   })
+}
+
+function _parseDiskMnt(section: string): ServerStats['mntSdbDisk'] {
+  const trimmed = section.trim()
+  if (!trimmed) return null
+  const lines = trimmed.split('\n').filter(Boolean)
+  if (lines.length < 2) return null
+  const data = lines.slice(1).join(' ').trim()
+  const parts = data.split(/\s+/)
+  const total = parseInt(parts[1], 10)
+  const used = parseInt(parts[2], 10)
+  const available = parseInt(parts[3], 10)
+  const usePercent = parseInt(parts[4], 10)
+  if (isNaN(total) || isNaN(used) || isNaN(available) || isNaN(usePercent)) return null
+  return { total, used, available, usePercent }
 }
 
 function _parseStats(raw: string): ServerStats {
   const s = _splitSections(raw)
+  const mntTimes = _parseMntTimes(s['__MNT_TIME__'] ?? '')
   return {
     disk: _parseDisk(s['__DISK__'] ?? ''),
     ram: _parseRam(s['__RAM__'] ?? ''),
     uptime: _parseUptime(s['__UPTIME__'] ?? ''),
-    mntSdb: _parseMntSdb(s['__MNT__'] ?? ''),
+    mntSdb: _parseMntSdb(s['__MNT__'] ?? '', mntTimes),
+    mntSdbDisk: _parseDiskMnt(s['__MNT_DISK__'] ?? ''),
   }
 }
 

@@ -7,7 +7,8 @@ interface ServerStats {
   disk: { filesystem: string; total: number; used: number; available: number; usePercent: number }
   ram: { total: number; used: number; available: number; usePercent: number }
   uptime: { seconds: number; human: string }
-  mntSdb: Array<{ name: string; bytes: number; human: string }> | null
+  mntSdb: Array<{ name: string; bytes: number; human: string; modifiedAt: number | null }> | null
+  mntSdbDisk: { total: number; used: number; available: number; usePercent: number } | null
 }
 
 function formatBytes(bytes: number): string {
@@ -15,6 +16,16 @@ function formatBytes(bytes: number): string {
   if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)} KB`
   if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(1)} MB`
   return `${(bytes / 1024 ** 3).toFixed(1)} GB`
+}
+
+function formatRelativeTime(epochSecs: number): string {
+  const diffSecs = Math.floor((Date.now() - epochSecs * 1000) / 1000)
+  if (diffSecs < 60) return 'just now'
+  const diffMins = Math.floor(diffSecs / 60)
+  if (diffMins < 60) return `${diffMins}m ago`
+  const diffHours = Math.floor(diffMins / 60)
+  if (diffHours < 24) return `${diffHours}h ago`
+  return `${Math.floor(diffHours / 24)}d ago`
 }
 
 async function fetchStats(): Promise<ServerStats> {
@@ -64,15 +75,27 @@ export function StatsPanel() {
       />
       {data.mntSdb && data.mntSdb.length > 0 && (
         <div className="px-4 py-3 bg-zinc-900">
-          <div className="flex items-center gap-3 mb-2">
-            <FolderOpen className="h-4 w-4 text-muted-foreground shrink-0" />
-            <p className="text-xs text-muted-foreground">/mnt/sdb</p>
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <div className="flex items-center gap-3">
+              <FolderOpen className="h-4 w-4 text-muted-foreground shrink-0" />
+              <p className="text-xs text-muted-foreground">/mnt/sdb</p>
+            </div>
+            {data.mntSdbDisk && (
+              <span className="text-xs text-muted-foreground shrink-0">
+                {formatBytes(data.mntSdbDisk.used)} / {formatBytes(data.mntSdbDisk.total)} ({data.mntSdbDisk.usePercent}%)
+              </span>
+            )}
           </div>
           <div className="space-y-1 pl-7">
             {data.mntSdb.map((entry) => (
               <div key={entry.name} className="flex items-center justify-between gap-4">
                 <span className="text-xs font-mono truncate">{entry.name}</span>
-                <span className="text-xs text-muted-foreground shrink-0">{entry.human}</span>
+                <div className="flex items-center gap-3 shrink-0">
+                  {entry.modifiedAt !== null && (
+                    <span className="text-xs text-muted-foreground/60">{formatRelativeTime(entry.modifiedAt)}</span>
+                  )}
+                  <span className="text-xs text-muted-foreground">{entry.human}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -101,3 +124,4 @@ function StatRow({
     </div>
   )
 }
+

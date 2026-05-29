@@ -64,14 +64,14 @@ export function PWAInstallBanner() {
           : 'Install ServerDeck for quick access'}
       </span>
       {!isIOS && deferredPrompt && (
-        <Button size="sm" variant="default" className="h-8 px-3 text-xs shrink-0" onClick={handleInstall}>
+        <Button size="sm" variant="default" className="h-11 px-3 text-xs shrink-0" onClick={handleInstall}>
           Install
         </Button>
       )}
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 shrink-0"
+        className="h-11 w-11 shrink-0"
         onClick={handleDismiss}
         aria-label="Dismiss install prompt"
       >

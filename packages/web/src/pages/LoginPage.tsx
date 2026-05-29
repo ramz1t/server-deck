@@ -22,9 +22,11 @@ export function LoginPage() {
   }, [navigate])
 
   useEffect(() => {
-    api.get<{ host: string }>('/config')
+    const controller = new AbortController()
+    api.get<{ host: string }>('/config', { signal: controller.signal })
       .then(({ data }) => setServerHost(data.host ?? ''))
       .catch(() => {})
+    return () => controller.abort()
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {

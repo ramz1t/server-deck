@@ -283,11 +283,11 @@ export function DashboardPage() {
       {/* Main content */}
       <main className="flex-1 overflow-auto px-4 py-4">
         <div className="max-w-screen-2xl mx-auto space-y-3">
-          {/* Server stats */}
-          <StatsPanel />
-
-          {/* Domain health */}
-          <DomainHealthWidget />
+          {/* Server stats + domain health side by side */}
+          <div className="grid grid-cols-2 gap-3">
+            <StatsPanel />
+            <DomainHealthWidget />
+          </div>
 
           {/* Loading skeletons */}
           {isLoading &&

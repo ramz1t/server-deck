@@ -45,8 +45,8 @@ export function DomainHealthWidget() {
   if ((MONITORED_DOMAINS as readonly string[]).length === 0) return null
 
   return (
-    <div className="border border-zinc-800">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-800">
+    <div className="border border-zinc-800 divide-y divide-zinc-800">
+      <div className="flex items-center justify-between px-4 py-2 bg-zinc-900">
         <div className="flex items-center gap-2">
           <Globe className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">Domains</span>
@@ -54,7 +54,7 @@ export function DomainHealthWidget() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 rounded-none"
+          className="h-11 w-11 rounded-none"
           onClick={() => refetch()}
           disabled={isFetching}
           aria-label="Refresh domain health checks"
@@ -64,13 +64,13 @@ export function DomainHealthWidget() {
       </div>
 
       {isLoading && (
-        <div className="px-4 py-3 text-xs text-muted-foreground">Checking…</div>
+        <div className="px-4 py-3 text-xs text-muted-foreground bg-zinc-900">Checking…</div>
       )}
 
       {data?.map((result) => (
         <div
           key={result.url}
-          className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 last:border-0"
+          className="flex items-center justify-between px-4 py-2.5 bg-zinc-900"
         >
           <span className="text-sm font-mono truncate">{result.url}</span>
           <StatusBadge up={result.up} latencyMs={result.latencyMs} />
