@@ -7,6 +7,11 @@ export async function verifyAuth(
   request: FastifyRequest,
   reply: FastifyReply
 ): Promise<void> {
+  // Only enforce auth on /api/* routes — static files and SPA routes must be publicly accessible
+  if (!request.url.startsWith('/api/')) {
+    return
+  }
+
   // Strip query string before path comparison to avoid blocking login with ?next=... (CR-03)
   if (EXCLUDED_PATHS.includes(request.url.split('?')[0])) {
     return
