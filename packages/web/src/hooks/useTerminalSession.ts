@@ -56,8 +56,17 @@ export function useTerminalSession(containerRef: React.RefObject<HTMLDivElement 
     fitAddonRef.current = fitAddon
 
     // ── Phase 2: WS connect (async) ───────────────────────────────────────
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const ws = new WebSocket(`${protocol}//${window.location.host}/api/terminal`)
+    const apiBase = import.meta.env.VITE_API_BASE as string | undefined
+    let wsUrl: string
+    if (apiBase) {
+      // Derive WS URL from VITE_API_BASE (e.g. https://api.example.com → wss://api.example.com/api/terminal)
+      const base = apiBase.replace(/\/+$/, '')
+      wsUrl = base.replace(/^http/, 'ws') + '/api/terminal'
+    } else {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+      wsUrl = `${protocol}//${window.location.host}/api/terminal`
+    }
+    const ws = new WebSocket(wsUrl)
     ws.binaryType = 'arraybuffer'         // receive binary frames as ArrayBuffer
     wsRef.current = ws
 
