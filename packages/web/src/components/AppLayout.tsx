@@ -1,30 +1,42 @@
-import { useNavigate, useOutletContext, NavLink, Outlet } from 'react-router-dom'
-import { Server, LogOut, LayoutGrid, BarChart2, Globe, TerminalSquare } from 'lucide-react'
-import { api } from '../lib/axios'
-import { Button } from './ui/button'
-import { PWAInstallBanner } from './PWAInstallBanner'
+import {
+  useNavigate,
+  useOutletContext,
+  NavLink,
+  Outlet,
+} from "react-router-dom";
+import {
+  Server,
+  LogOut,
+  LayoutGrid,
+  BarChart2,
+  Globe,
+  TerminalSquare,
+} from "lucide-react";
+import { api } from "../lib/axios";
+import { Button } from "./ui/button";
+import { PWAInstallBanner } from "./PWAInstallBanner";
 
-type AppContext = { host: string; username: string; port: string }
+type AppContext = { host: string; username: string; port: string };
 
 export function AppLayout() {
-  const navigate = useNavigate()
-  const { host, username, port } = useOutletContext<AppContext>()
+  const navigate = useNavigate();
+  const { host, username, port } = useOutletContext<AppContext>();
 
   async function handleLogout() {
     try {
-      await api.post('/auth/logout')
+      await api.post("/auth/logout");
     } catch {
       // redirect regardless
     }
-    navigate('/login')
+    navigate("/login");
   }
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-1.5 px-3 h-11 text-sm font-medium border-b-2 transition-colors ${
       isActive
-        ? 'border-white text-white'
-        : 'border-transparent text-muted-foreground hover:text-white'
-    }`
+        ? "border-white text-white"
+        : "border-transparent text-muted-foreground hover:text-white"
+    }`;
 
   return (
     <div className="h-svh flex flex-col bg-background overflow-hidden">
@@ -51,7 +63,7 @@ export function AppLayout() {
               </NavLink>
               <NavLink to="/terminal" className={navLinkClass}>
                 <TerminalSquare className="h-4 w-4" />
-                <span className="hidden sm:inline">Terminal</span>
+                <span className="hidden sm:inline">Shell</span>
               </NavLink>
             </nav>
           </div>
@@ -78,5 +90,5 @@ export function AppLayout() {
 
       <Outlet context={{ host, username, port }} />
     </div>
-  )
+  );
 }
