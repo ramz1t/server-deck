@@ -1,11 +1,9 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import fastifyRateLimit from '@fastify/rate-limit'
-import { validateSshCredentials } from '../services/ssh-auth.js'
 import { setSession, getSession, deleteSession } from '../services/session-store.js'
 
 type LoginBody = {
   password: string
-  // host/port/username removed — read from process.env (CONF-01)
 }
 
 export async function authRoutes(fastify: FastifyInstance): Promise<void> {
@@ -27,24 +25,23 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     },
     async (request: FastifyRequest<{ Body: LoginBody }>, reply: FastifyReply) => {
       const { password } = request.body
+      const portalPass = process.env.PORTAL_PASS
+      if (!portalPass) {
+        fastify.log.error('PORTAL_PASS env var is not set')
+        return reply.status(500).send({ error: 'Server misconfigured' })
+      }
+
+      if (password !== portalPass) {
+        return reply.status(401).send({ error: 'Invalid credentials' })
+      }
+
       const host = process.env.SSH_HOST!
       const port = Number(process.env.SSH_PORT ?? 22)
       const username = process.env.SSH_USERNAME!
-
-      const result = await validateSshCredentials(host, port, username, password)
-
-      if (result === 'auth_failed') {
-        return reply.status(401).send({ error: 'Invalid credentials' })
-      }
-      if (result === 'timeout') {
-        return reply.status(504).send({ error: 'Connection timed out' })
-      }
-      if (result === 'unreachable') {
-        return reply.status(502).send({ error: 'Host unreachable' })
-      }
+      const sshPassword = process.env.SSH_PASSWORD ?? ''
 
       const sessionId = crypto.randomUUID()
-      setSession(sessionId, { host, port, username, password })
+      setSession(sessionId, { host, port, username, password: sshPassword })
 
       const token = fastify.jwt.sign({ sessionId }, { expiresIn: '7d' })
 
@@ -70,7 +67,6 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     try {
       const token = (request.cookies as Record<string, string | undefined>)['sd_token']
       if (token) {
-        // Use jwt.verify (not jwt.decode) to prevent forged cookie session deletion (CR-02)
         const payload = await fastify.jwt.verify<{ sessionId: string }>(token)
         if (payload?.sessionId) {
           deleteSession(payload.sessionId)
@@ -85,8 +81,6 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
   })
 
   fastify.get('/api/auth/me', async (request: FastifyRequest, reply: FastifyReply) => {
-    // jwtVerify already called by verifyAuth preHandler; calling it again is harmless
-    // but redundant — relying on preHandler-populated request.user (IN-03 noted)
     const session = getSession(request.user.sessionId)
     if (!session) {
       return reply.status(401).send({ error: 'Session not found' })
