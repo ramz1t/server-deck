@@ -5,3 +5,5 @@ dist/
 .DS_Store
 packages/*/node_modules/
 packages/*/dist/
+vite.config.js
+vite.config.d.ts
