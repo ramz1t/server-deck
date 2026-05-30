@@ -60,7 +60,7 @@ export function useTerminalSession(containerRef: React.RefObject<HTMLDivElement 
     let wsUrl: string
     if (apiBase) {
       // Derive WS URL from VITE_API_BASE (e.g. https://api.example.com → wss://api.example.com/api/terminal)
-      const base = apiBase.replace(/\/+$/, '')
+      const base = apiBase.replace(/\/+$/, '').replace(/\/api$/, '')
       wsUrl = base.replace(/^http/, 'ws') + '/api/terminal'
     } else {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
