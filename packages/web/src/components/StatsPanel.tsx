@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { HardDrive, MemoryStick, Container, Trash2 } from "lucide-react";
+import { HardDrive, MemoryStick, Container, Trash2, Network } from "lucide-react";
 import { api } from "../lib/axios";
 import { Skeleton } from "./ui/skeleton";
 import { Button } from "./ui/button";
@@ -52,6 +52,7 @@ interface ServerStats {
       reclaimable: string;
     };
   } | null;
+  nginxRoutes: Array<{ path: string; port: number; ws: boolean }> | null;
 }
 
 function formatBytes(bytes: number): string {
@@ -193,6 +194,25 @@ export function StatsPanel() {
                     ↓ {row.reclaimable}
                   </span>
                 )}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      {data.nginxRoutes && data.nginxRoutes.length > 0 && (
+        <>
+          <div className="flex items-center gap-3 px-4 py-2 bg-zinc-900">
+            <Network className="h-4 w-4 text-muted-foreground shrink-0" />
+            <p className="text-xs text-muted-foreground">Nginx routes</p>
+          </div>
+          <div className="px-4 py-2 bg-zinc-900 space-y-1 pl-11">
+            {data.nginxRoutes.map((r) => (
+              <div key={r.path + r.port} className="flex items-center gap-2">
+                <span className="text-xs font-mono text-zinc-300 flex-1 truncate">{r.path}</span>
+                {r.ws && (
+                  <span className="text-xs text-blue-400/70 shrink-0">WS</span>
+                )}
+                <span className="text-xs font-mono text-muted-foreground shrink-0">:{r.port}</span>
               </div>
             ))}
           </div>

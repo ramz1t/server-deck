@@ -133,9 +133,9 @@ export function DomainHealthWidget() {
   const groups = data ? groupResults(data) : [];
 
   return (
-    <div className=" divide-y divide-zinc-800">
+    <div>
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-zinc-900">
+      <div className="flex items-center justify-between pl-4 pr-2 py-2 bg-zinc-900">
         <div className="flex items-center gap-2">
           <Globe className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">Domains</span>
@@ -160,7 +160,7 @@ export function DomainHealthWidget() {
         </div>
       )}
 
-      <div className="divide-y divide-zinc-800/0 flex flex-col">
+      <div className="flex flex-col">
         {groups.map((group) => (
           <div key={group.domain} className="flex flex-col">
             {/* Domain group header */}

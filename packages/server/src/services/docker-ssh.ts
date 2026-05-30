@@ -143,6 +143,11 @@ export interface ServerStats {
     volumes:    { total: number; active: number; size: string; reclaimable: string }
     buildCache: { total: number; active: number; size: string; reclaimable: string }
   } | null             // null when docker is unavailable on the server
+  nginxRoutes: Array<{
+    path: string    // e.g. "/grocket/"
+    port: number    // e.g. 8001
+    ws: boolean     // true if this location has proxy_http_version 1.1 (websocket)
+  }> | null         // null when config file not found
 }
 
 // Single combined command — semicolons (not &&) so every section runs regardless.
@@ -155,6 +160,7 @@ const STATS_CMD =
   "echo '__MNT_DISK__'; df -B1 /mnt/sdb 2>/dev/null; " +
   "echo '__MNT_TIME__'; stat -c '%Y %n' /mnt/sdb/* 2>/dev/null; " +
   "echo '__DOCKER_DF__'; docker system df 2>/dev/null; " +
+  "echo '__NGINX__'; cat /mnt/sdb/global.conf 2>/dev/null; " +
   "echo '__END__'; true"
 
 // 30-second in-memory cache — stats don't change meaningfully in 30 s.
@@ -163,7 +169,7 @@ let _statsCache: { data: ServerStats; expiresAt: number } | null = null
 const STATS_CACHE_TTL = 30_000
 
 function _splitSections(raw: string): Record<string, string> {
-  const MARKERS = ['__DISK__', '__RAM__', '__UPTIME__', '__MNT__', '__MNT_DISK__', '__MNT_TIME__', '__DOCKER_DF__', '__END__']
+  const MARKERS = ['__DISK__', '__RAM__', '__UPTIME__', '__MNT__', '__MNT_DISK__', '__MNT_TIME__', '__DOCKER_DF__', '__NGINX__', '__END__']
   const sections: Record<string, string> = {}
   let current = ''
   for (const line of raw.split('\n')) {
@@ -302,6 +308,24 @@ function _parseDockerDf(section: string): ServerStats['dockerDf'] {
   }
 }
 
+function _parseNginxRoutes(conf: string): ServerStats['nginxRoutes'] {
+  if (!conf.trim()) return null
+  const routes: NonNullable<ServerStats['nginxRoutes']> = []
+  // Split into location blocks
+  const blockRe = /location\s+(\S+)\s*\{([^}]*)\}/gs
+  let match: RegExpExecArray | null
+  while ((match = blockRe.exec(conf)) !== null) {
+    const path = match[1]
+    const body = match[2]
+    const portMatch = body.match(/proxy_pass\s+http:\/\/[^:]+:(\d+)/)
+    if (!portMatch) continue
+    const port = parseInt(portMatch[1], 10)
+    const ws = /proxy_http_version\s+1\.1/.test(body)
+    routes.push({ path, port, ws })
+  }
+  return routes.length ? routes : null
+}
+
 function _parseStats(raw: string): ServerStats {
   const s = _splitSections(raw)
   const mntTimes = _parseMntTimes(s['__MNT_TIME__'] ?? '')
@@ -312,6 +336,7 @@ function _parseStats(raw: string): ServerStats {
     mntSdb: _parseMntSdb(s['__MNT__'] ?? '', mntTimes),
     mntSdbDisk: _parseDiskMnt(s['__MNT_DISK__'] ?? ''),
     dockerDf: _parseDockerDf(s['__DOCKER_DF__'] ?? ''),
+    nginxRoutes: _parseNginxRoutes(s['__NGINX__'] ?? ''),
   }
 }
 
