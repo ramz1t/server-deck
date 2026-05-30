@@ -326,7 +326,7 @@ export async function getServerStats(session: SessionData): Promise<ServerStats>
 }
 
 export async function dockerSystemPrune(session: SessionData): Promise<string> {
-  const output = await sshExec(session, 'docker system prune -f 2>&1; true')
+  const output = await sshExec(session, 'docker system prune -af --volumes 2>&1; true')
   // Invalidate stats cache so next fetch reflects reclaimed space
   _statsCache = null
   return output
