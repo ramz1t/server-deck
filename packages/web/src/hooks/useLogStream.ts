@@ -15,8 +15,15 @@ export function useLogStream(containerId: string): { lines: string[]; connected:
 
     function connect() {
       if (cancelled) return
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      const wsUrl = `${protocol}//${window.location.host}/api/containers/${containerId}/logs`
+      const apiBase = import.meta.env.VITE_API_BASE as string | undefined
+      let wsUrl: string
+      if (apiBase) {
+        const base = apiBase.replace(/\/+$/, '').replace(/\/api$/, '')
+        wsUrl = base.replace(/^http/, 'ws') + `/api/containers/${containerId}/logs`
+      } else {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+        wsUrl = `${protocol}//${window.location.host}/api/containers/${containerId}/logs`
+      }
       const ws = new WebSocket(wsUrl)
       wsRef.current = ws
 
