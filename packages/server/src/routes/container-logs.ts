@@ -1,94 +1,60 @@
-import type { FastifyPluginAsync, FastifyRequest } from 'fastify'
-import type { WebSocket } from 'ws'
-import type { ClientChannel } from 'ssh2'
+import type { FastifyPluginAsync } from 'fastify'
 import { Client } from 'ssh2'
 import { verifyAuth, getRequestSession } from '../middleware/verify-auth.js'
-import type { SessionData } from '../types/session.js'
 import { isValidContainerId } from '../services/docker-ssh.js'
 
-function getSession(request: FastifyRequest): SessionData {
-  const session = (request as unknown as { session?: SessionData }).session
-  if (!session) {
-    // Should never happen — verifyAuth preHandler always runs first
-    throw new Error('session missing from request — verifyAuth did not run')
-  }
-  return session
-}
-
 export const containerLogsRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.get<{ Params: { id: string } }>(
+  fastify.get<{ Params: { id: string }; Querystring: { tail?: string } }>(
     '/api/containers/:id/logs',
-    { websocket: true, preHandler: [verifyAuth] },
-    (socket: WebSocket, req) => {
+    { preHandler: [verifyAuth] },
+    async (req, reply) => {
       const { id } = req.params
+      const tail = Math.min(parseInt(req.query.tail ?? '200', 10) || 200, 2000)
 
-      // Validate container ID before opening SSH (D-P4-09, T-04-02)
       if (!isValidContainerId(id)) {
-        socket.close(1008, 'Invalid container ID')
-        return
+        return reply.code(400).send({ error: 'Invalid container ID' })
       }
 
       const session = getRequestSession(req)
-      const conn = new Client()
-      let stream: ClientChannel | null = null
 
-      conn.on('ready', () => {
-        conn.exec(`docker logs --follow --tail 200 ${id} 2>&1`, (err, execStream) => {
-          if (err) {
-            try { socket.close(1011, 'SSH exec failed') } catch { /* ignore */ }
-            try { conn.end() } catch { /* ignore */ }
-            return
-          }
+      const lines = await new Promise<string[]>((resolve, reject) => {
+        const conn = new Client()
+        let output = ''
 
-          stream = execStream
-          let buffer = ''
-
-          stream.on('data', (chunk: Buffer) => {
-            buffer += chunk.toString()
-            const lines = buffer.split('\n')
-            // Keep incomplete last fragment in buffer
-            buffer = lines.pop() ?? ''
-            for (const line of lines) {
-              const trimmed = line.trimEnd()
-              if (trimmed === '') continue
-              try {
-                socket.send(JSON.stringify({ type: 'log', line: trimmed }))
-              } catch {
-                // Socket may have closed mid-stream — ignore
-              }
+        conn.on('ready', () => {
+          conn.exec(`docker logs --tail ${tail} ${id} 2>&1`, (err, stream) => {
+            if (err) {
+              conn.end()
+              return reject(err)
             }
+            stream.on('data', (chunk: Buffer) => { output += chunk.toString() })
+            stream.on('close', () => {
+              conn.end()
+              const result = output
+                .split('\n')
+                .map((l) => l.trimEnd())
+                .filter((l) => l !== '')
+              resolve(result)
+            })
           })
+        })
 
-          stream.on('close', () => {
-            try { conn.end() } catch { /* ignore */ }
-            try { socket.close() } catch { /* ignore */ }
-          })
+        conn.on('error', (err) => {
+          fastify.log.error({ err }, 'container-logs SSH error')
+          reject(err)
+        })
+
+        conn.connect({
+          host: session.host,
+          port: session.port,
+          username: session.username,
+          password: session.password,
+          readyTimeout: 10_000,
+          keepaliveInterval: 0,
         })
       })
 
-      conn.on('error', (err) => {
-        fastify.log.error({ err }, 'container-logs SSH error')
-        try { conn.end() } catch { /* ignore */ }
-        try { socket.close(1011, 'SSH error') } catch { /* ignore */ }
-      })
-
-      // Teardown on WS close — stream.destroy() is CRITICAL for LOGS-04
-      // destroy() sends both stream EOF and SSH_MSG_CHANNEL_CLOSE so the
-      // remote `docker logs` process gets SIGPIPE and terminates. close() alone
-      // skips the EOF signal and leaks the SSH channel.
-      socket.on('close', () => {
-        try { if (stream) stream.destroy() } catch { /* ignore */ }
-        try { conn.end() } catch { /* ignore */ }
-      })
-
-      conn.connect({
-        host: session.host,
-        port: session.port,
-        username: session.username,
-        password: session.password,
-        readyTimeout: 10_000,
-        keepaliveInterval: 0,
-      })
+      return reply.send({ lines })
     }
   )
 }

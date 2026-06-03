@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, RefreshCw } from 'lucide-react'
 import { Button } from '../components/ui/button'
-import { useLogStream } from '../hooks/useLogStream'
+import { useContainerLogs } from '../hooks/useLogStream'
 import Convert from 'ansi-to-html'
 
 // Instantiate once at module level — avoids re-creating on every render
@@ -17,7 +17,7 @@ export function LogPage() {
   const containerName =
     (location.state as { name?: string } | null)?.name ?? (containerId?.slice(0, 12) ?? 'unknown')
 
-  const { lines, connected } = useLogStream(containerId ?? '')
+  const { data: lines = [], isLoading, isError, refetch, isFetching } = useContainerLogs(containerId ?? '')
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const autoScrollRef = useRef(true)
@@ -79,35 +79,51 @@ export function LogPage() {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <span className="font-semibold truncate flex-1">{containerName}</span>
-        {connected ? (
-          <span className="text-xs text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full shrink-0">
-            live
-          </span>
-        ) : (
-          <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded-full shrink-0">
-            disconnected
-          </span>
-        )}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-11 w-11 shrink-0"
+          onClick={() => refetch()}
+          disabled={isFetching}
+          aria-label="Refresh logs"
+        >
+          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+        </Button>
       </header>
 
       {/* Log scroll area */}
       <main className="flex-1 relative overflow-hidden">
-        <div
-          ref={scrollRef}
-          onScroll={handleScroll}
-          className="h-full overflow-y-auto"
-          style={{ height: 'calc(100svh - 57px)' }}
-        >
-          <pre className="font-mono text-sm text-zinc-200 whitespace-pre-wrap break-words bg-zinc-950 px-4 py-3 min-h-full">
-            {htmlLines.map((html, i) => (
-              <div
-                key={i}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: html }}
-              />
-            ))}
-          </pre>
-        </div>
+        {isLoading && (
+          <div className="flex items-center justify-center h-32 text-zinc-500 text-sm">
+            Loading logs…
+          </div>
+        )}
+        {isError && (
+          <div className="flex items-center justify-center h-32 text-red-400 text-sm">
+            Failed to fetch logs.{' '}
+            <button type="button" onClick={() => refetch()} className="underline ml-1">
+              Retry
+            </button>
+          </div>
+        )}
+        {!isLoading && !isError && (
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="h-full overflow-y-auto"
+            style={{ height: 'calc(100svh - 57px)' }}
+          >
+            <pre className="font-mono text-sm text-zinc-200 whitespace-pre-wrap break-words bg-zinc-950 px-4 py-3 min-h-full">
+              {htmlLines.map((html, i) => (
+                <div
+                  key={i}
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{ __html: html }}
+                />
+              ))}
+            </pre>
+          </div>
+        )}
 
         {/* Floating resume button — appears when user scrolls up (D-P4-13) */}
         {showResume && (
