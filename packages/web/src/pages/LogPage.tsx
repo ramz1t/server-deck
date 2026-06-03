@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import { ArrowLeft, RefreshCw } from 'lucide-react'
+import { ArrowLeft, RefreshCw, ScrollText } from 'lucide-react'
 import { Button } from '../components/ui/button'
 import { useContainerLogs } from '../hooks/useLogStream'
 import Convert from 'ansi-to-html'
@@ -106,7 +106,13 @@ export function LogPage() {
             </button>
           </div>
         )}
-        {!isLoading && !isError && (
+        {!isLoading && !isError && lines.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-32 gap-2 text-zinc-500 text-sm">
+            <ScrollText className="h-5 w-5 opacity-40" />
+            <span>No logs available</span>
+          </div>
+        )}
+        {!isLoading && !isError && lines.length > 0 && (
           <div
             ref={scrollRef}
             onScroll={handleScroll}
