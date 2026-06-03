@@ -1,7 +1,16 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
 import { getSession } from '../services/session-store.js'
+import type { SessionData } from '../types/session.js'
 
 const EXCLUDED_PATHS = ['/api/auth/login', '/api/auth/logout', '/api/config']
+
+export function getRequestSession(request: FastifyRequest): SessionData {
+  const session = (request as unknown as { session?: SessionData }).session
+  if (!session) {
+    throw new Error('session missing from request — verifyAuth did not run')
+  }
+  return session
+}
 
 export async function verifyAuth(
   request: FastifyRequest,

@@ -2,7 +2,7 @@ import type { FastifyPluginAsync, FastifyRequest } from 'fastify'
 import type { WebSocket } from 'ws'
 import type { ClientChannel } from 'ssh2'
 import { Client } from 'ssh2'
-import { verifyAuth } from '../middleware/verify-auth.js'
+import { verifyAuth, getRequestSession } from '../middleware/verify-auth.js'
 import type { SessionData } from '../types/session.js'
 import { isValidContainerId } from '../services/docker-ssh.js'
 
@@ -28,7 +28,7 @@ export const containerLogsRoute: FastifyPluginAsync = async (fastify) => {
         return
       }
 
-      const session = getSession(req)
+      const session = getRequestSession(req)
       const conn = new Client()
       let stream: ClientChannel | null = null
 

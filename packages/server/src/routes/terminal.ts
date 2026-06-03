@@ -3,22 +3,14 @@ import type { WebSocket } from 'ws'
 import type { ClientChannel } from 'ssh2'
 import { Client } from 'ssh2'
 // verifyAuth is applied globally in server.ts — this route is automatically protected
-import type { SessionData } from '../types/session.js'
-
-function getSession(request: FastifyRequest): SessionData {
-  const session = (request as unknown as { session?: SessionData }).session
-  if (!session) {
-    throw new Error('session missing from request — verifyAuth did not run')
-  }
-  return session
-}
+import { getRequestSession } from '../middleware/verify-auth.js'
 
 export const terminalRoute: FastifyPluginAsync = async (fastify) => {
   fastify.get(
     '/api/terminal',
     { websocket: true },
     (socket: WebSocket, req) => {
-      const { host, port, username, password } = getSession(req)
+      const { host, port, username, password } = getRequestSession(req)
       const conn = new Client()
       let stream: ClientChannel | null = null
 

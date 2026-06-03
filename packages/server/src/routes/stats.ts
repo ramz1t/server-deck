@@ -1,18 +1,10 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import { getServerStats, dockerSystemPrune } from '../services/docker-ssh.js'
-import type { SessionData } from '../types/session.js'
-
-function getSession(request: FastifyRequest): SessionData {
-  const session = (request as unknown as { session?: SessionData }).session
-  if (!session) {
-    throw new Error('session missing from request — verifyAuth did not run')
-  }
-  return session
-}
+import { getRequestSession } from '../middleware/verify-auth.js'
 
 export async function statsRoutes(fastify: FastifyInstance): Promise<void> {
   fastify.get('/api/stats', async (request: FastifyRequest, reply: FastifyReply) => {
-    const session = getSession(request)
+    const session = getRequestSession(request)
     try {
       const stats = await getServerStats(session)
       return stats
@@ -23,7 +15,7 @@ export async function statsRoutes(fastify: FastifyInstance): Promise<void> {
   })
 
   fastify.post('/api/docker/prune', async (request: FastifyRequest, reply: FastifyReply) => {
-    const session = getSession(request)
+    const session = getRequestSession(request)
     try {
       const output = await dockerSystemPrune(session)
       return { output }

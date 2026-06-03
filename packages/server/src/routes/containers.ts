@@ -7,22 +7,13 @@ import {
   deleteContainer,
   isValidContainerId,
 } from '../services/docker-ssh.js'
-import type { SessionData } from '../types/session.js'
+import { getRequestSession } from '../middleware/verify-auth.js'
 
 type ActionParams = { id: string }
 
-function getSession(request: FastifyRequest): SessionData {
-  const session = (request as unknown as { session?: SessionData }).session
-  if (!session) {
-    // Should never happen — verifyAuth preHandler always runs first (WR-02)
-    throw new Error('session missing from request — verifyAuth did not run')
-  }
-  return session
-}
-
 export async function containerRoutes(fastify: FastifyInstance): Promise<void> {
   fastify.get('/api/containers', async (request: FastifyRequest, reply: FastifyReply) => {
-    const session = getSession(request)
+    const session = getRequestSession(request)
     try {
       const containers = await listContainers(session)
       return containers
@@ -40,7 +31,7 @@ export async function containerRoutes(fastify: FastifyInstance): Promise<void> {
         if (!isValidContainerId(id)) {
           return reply.status(400).send({ error: 'Invalid container ID' })
         }
-        const session = getSession(request)
+        const session = getRequestSession(request)
         try {
           if (action === 'start') await startContainer(session, id)
           else if (action === 'stop') await stopContainer(session, id)
@@ -61,7 +52,7 @@ export async function containerRoutes(fastify: FastifyInstance): Promise<void> {
       if (!isValidContainerId(id)) {
         return reply.status(400).send({ error: 'Invalid container ID' })
       }
-      const session = getSession(request)
+      const session = getRequestSession(request)
       try {
         await deleteContainer(session, id)
         return { ok: true }
