@@ -1,17 +1,7 @@
 import * as React from "react";
-import { Loader2, ScrollText, RotateCw, Square, Play, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { Loader2, ScrollText, RotateCw, Square, Play, Trash2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 interface ContainerInfo {
   id: string;
@@ -32,6 +22,50 @@ interface ContainerCardProps {
   onDelete: (id: string) => void
   isActing: boolean
 }
+
+interface ConfirmButtonProps {
+  icon: React.ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  className?: string;
+  "aria-label"?: string;
+}
+
+function ConfirmButton({ icon, onClick, disabled, className, "aria-label": ariaLabel }: ConfirmButtonProps) {
+  const [pending, setPending] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pressedAtRef = useRef(0);
+
+  function handleClick() {
+    if (disabled) return;
+    if (pending) {
+      if (Date.now() - pressedAtRef.current < 150) {
+        clearTimeout(timerRef.current!);
+        setPending(false);
+        onClick();
+      }
+      // if >= 150ms the timer already reset — fall through to treat as first click
+    } else {
+      setPending(true);
+      pressedAtRef.current = Date.now();
+      timerRef.current = setTimeout(() => setPending(false), 150);
+    }
+  }
+
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      className={className}
+      disabled={disabled}
+      onClick={handleClick}
+      aria-label={ariaLabel}
+    >
+      {pending ? <Check className="h-4 w-4" /> : icon}
+    </Button>
+  );
+}
+
 
 function StateBadge({ state }: { state: string }) {
   let className = "";
@@ -87,7 +121,7 @@ export function ContainerCard({
 
       {/* Action buttons — icon only */}
       <div className="flex justify-end">
-        {/* Logs — always visible */}
+        {/* Logs — always visible, no confirm needed */}
         <Button
           variant="outline"
           size="icon"
@@ -97,56 +131,23 @@ export function ContainerCard({
         >
           <ScrollText className="h-4 w-4" />
         </Button>
+
         {container.state === "running" && (
           <>
-            {/* Restart */}
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-11 w-11 rounded-none border-0 bg-zinc-800 hover:bg-zinc-700"
-              disabled={isActing}
+            <ConfirmButton
+              icon={isActing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RotateCw className="h-4 w-4" />}
               onClick={() => onRestart(container.id)}
+              disabled={isActing}
+              className="h-11 w-11 rounded-none border-0 bg-zinc-800 hover:bg-zinc-700"
               aria-label="Restart"
-            >
-              {isActing ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <RotateCw className="h-4 w-4" />
-              )}
-            </Button>
-
-            {/* Stop — guarded by AlertDialog */}
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-11 w-11 rounded-none border-0 bg-zinc-800 text-red-400 hover:bg-zinc-700 hover:text-red-400"
-                  disabled={isActing}
-                  aria-label="Stop"
-                >
-                  <Square className="h-4 w-4" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Stop container?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This will stop {containerName}. Any running processes will
-                    be interrupted.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    onClick={() => onStop(container.id)}
-                  >
-                    Stop container
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            />
+            <ConfirmButton
+              icon={isActing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Square className="h-4 w-4" />}
+              onClick={() => onStop(container.id)}
+              disabled={isActing}
+              className="h-11 w-11 rounded-none border-0 bg-zinc-800 text-red-400 hover:bg-zinc-700 hover:text-red-400"
+              aria-label="Stop"
+            />
           </>
         )}
 
@@ -164,52 +165,20 @@ export function ContainerCard({
 
         {["exited", "dead", "created", "paused"].includes(container.state) && (
           <>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-11 w-11 rounded-none border-0 bg-zinc-800 hover:bg-zinc-700"
-              disabled={isActing}
+            <ConfirmButton
+              icon={isActing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
               onClick={() => onStart(container.id)}
+              disabled={isActing}
+              className="h-11 w-11 rounded-none border-0 bg-zinc-800 hover:bg-zinc-700"
               aria-label="Start"
-            >
-              {isActing ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Play className="h-4 w-4" />
-              )}
-            </Button>
-
-            {/* Delete — guarded by AlertDialog */}
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-11 w-11 rounded-none border-0 bg-zinc-800 text-red-400 hover:bg-zinc-700 hover:text-red-400"
-                  disabled={isActing}
-                  aria-label="Delete"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Delete container?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This will permanently delete {containerName}. This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    onClick={() => onDelete(container.id)}
-                  >
-                    Delete container
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            />
+            <ConfirmButton
+              icon={isActing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              onClick={() => onDelete(container.id)}
+              disabled={isActing}
+              className="h-11 w-11 rounded-none border-0 bg-zinc-800 text-red-400 hover:bg-zinc-700 hover:text-red-400"
+              aria-label="Delete"
+            />
           </>
         )}
       </div>
