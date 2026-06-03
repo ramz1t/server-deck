@@ -6,7 +6,6 @@ import { api } from '../lib/axios'
 import { ContainerGroup } from '../components/ContainerGroup'
 import { Button } from '../components/ui/button'
 import { Skeleton } from '../components/ui/skeleton'
-import { useContainerEvents } from '../hooks/useContainerEvents'
 
 interface ContainerInfo {
   id: string
@@ -114,7 +113,6 @@ export function ContainersPage() {
   const navigate = useNavigate()
   useOutletContext<AppContext>() // ensures page is only rendered inside AppLayout
   const queryClient = useQueryClient()
-  useContainerEvents(queryClient)
   const [actingContainers, setActingContainers] = useState<Set<string>>(new Set())
 
   const {

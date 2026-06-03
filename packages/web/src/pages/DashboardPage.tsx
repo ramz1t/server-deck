@@ -12,7 +12,6 @@ import { api } from "../lib/axios";
 import { ContainerGroup } from "../components/ContainerGroup";
 import { Button } from "../components/ui/button";
 import { Skeleton } from "../components/ui/skeleton";
-import { useContainerEvents } from "../hooks/useContainerEvents";
 import { PWAInstallBanner } from "../components/PWAInstallBanner";
 import { StatsPanel } from "../components/StatsPanel";
 import { DomainHealthWidget } from "../components/DomainHealthWidget";
@@ -136,7 +135,6 @@ export function DashboardPage() {
   const navigate = useNavigate();
   const { host, username, port } = useOutletContext<DashboardContext>();
   const queryClient = useQueryClient();
-  const { wsConnected, hasConnectedOnce } = useContainerEvents(queryClient);
   const [actingContainers, setActingContainers] = useState<Set<string>>(
     new Set(),
   );
@@ -150,7 +148,7 @@ export function DashboardPage() {
   } = useQuery<ContainerInfo[]>({
     queryKey: ["containers"],
     queryFn: fetchContainers,
-    refetchInterval: wsConnected ? false : 5000,
+    refetchInterval: 5000,
   });
 
   const mutation = useMutation({
@@ -240,11 +238,6 @@ export function DashboardPage() {
               {username}@{host}:{port}
             </span>
           </div>
-          {!wsConnected && hasConnectedOnce && (
-            <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-0.5 shrink-0">
-              reconnecting…
-            </span>
-          )}
           <div className="flex items-center gap-2 shrink-0">
             <Button
               variant="ghost"
