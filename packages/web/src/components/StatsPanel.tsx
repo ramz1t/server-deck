@@ -210,7 +210,7 @@ export function StatsPanel() {
               <div key={r.path + r.port} className="flex items-center gap-2">
                 <span className="text-xs font-mono text-zinc-300 flex-1 truncate">{r.path}</span>
                 {r.ws && (
-                  <span className="text-xs text-blue-400/70 shrink-0">WS</span>
+                  <span className="text-xs font-bold text-blue-400/70 shrink-0">WS</span>
                 )}
                 <span className="text-xs font-mono text-muted-foreground shrink-0">:{r.port}</span>
               </div>
